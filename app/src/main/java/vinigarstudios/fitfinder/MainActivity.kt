@@ -1,4 +1,4 @@
-package com.example.fitfinder
+package vinigarstudios.fitfinder
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.example.fitfinder
+package vinigarstudios.fitfinder
 
 import org.junit.Test
 

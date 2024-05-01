@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.fitfinder"
+    namespace = "vinigarstudios.fitfinder"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.fitfinder"
+        applicationId = "vinigarstudios.fitfinder"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
