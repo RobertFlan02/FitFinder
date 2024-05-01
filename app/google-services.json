@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "64214660700",
+    "project_id": "fitfinder-2d866",
+    "storage_bucket": "fitfinder-2d866.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64214660700:android:e2e9dfdef7b64f18b25899",
+        "android_client_info": {
+          "package_name": "com.example.fitfinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMDU0r3zJsa642n8tFePylDUITEhCLVwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
