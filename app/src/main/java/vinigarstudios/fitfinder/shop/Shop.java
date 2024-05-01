@@ -45,28 +45,6 @@ public class Shop {
             return false;
         }
     }
-
-    public boolean TryRemoveClothes(Clothes clothes)
-    {
-        try
-        {
-            if (this.clothesList.contains(clothes))
-            {
-                this.clothesList.remove(clothes);
-                return true;
-            }
-            else
-            {
-                Log.i(shopName + "clothesNotInShop: " + clothes.getName(), "Clothes with name: " + clothes.getName() + " cannot be removed from " + this.shopName + ". As it is not in the clothesList.");
-                return false;
-            }
-        }
-        catch(Exception e)
-        {
-            Log.e(shopName + " TryRemoveClothesError","An error occurred with shop: " + this.shopName + ".\n Error: " + e.getMessage());
-            return false;
-        }
-    }
     public boolean TryRemoveClothes(Clothes clothes)
     {
         try
