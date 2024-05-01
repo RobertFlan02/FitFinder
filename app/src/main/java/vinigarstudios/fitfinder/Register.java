@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.TextView;
 
-import com.example.fitfinder.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -54,7 +53,7 @@ public class Register extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), com.example.fitfinder.Login.class);
+                Intent intent = new Intent(getApplicationContext(), vinigarstudios.fitfinder.Login.class);
                 startActivity(intent);
                 finish();
             }
