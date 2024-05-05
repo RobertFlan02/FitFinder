@@ -16,6 +16,7 @@ import vinigarstudios.fitfinder.loginregistration.Login;
 /**
  * This class has base implementation that should be in most activity view models.
  * 1. It makes sure user is signed in and puts him to Login page if user is not signed in -> Hence why login doesn't inherit this.
+ * 2. Contains a reference to the CurrentUser mAuth and Database.
  */
 public class VinigarCompatActivity extends AppCompatActivity {
 
