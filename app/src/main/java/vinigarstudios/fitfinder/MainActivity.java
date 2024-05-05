@@ -26,9 +26,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 
+import vinigarstudios.fitfinder.search.Search;
+
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
-    Button button, uploadButton;
+    Button logoutButton, uploadButton, searchButton;
     ImageView imageView;
     FirebaseUser user;
     FirebaseFirestore db;
@@ -43,9 +45,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
-        button = findViewById(R.id.logout);
+        logoutButton = findViewById(R.id.logoutButton);
         imageView = findViewById(R.id.imageView);
-        uploadButton = findViewById(R.id.button);
+        uploadButton = findViewById(R.id.uploadButton);
+        searchButton = findViewById(R.id.searchButton);
         db = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
         storageRef = FirebaseStorage.getInstance().getReference().child("uploadedPhotos");
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
@@ -65,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Search.class);
+                startActivity(intent);
+            }
+        });
+
 
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
