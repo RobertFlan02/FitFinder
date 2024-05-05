@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder;
+package vinigarstudios.fitfinder.loginregistration;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,15 +26,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.R;
+
 
 public class Register extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword;
-    Button buttonReg;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView textView;
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button buttonReg;
+    private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
+    private TextView textView;
+    private static final String TAG = "Register";
 
+    //region Override Methods
     @Override
     public void onStart() {
         super.onStart();
@@ -112,8 +117,9 @@ public class Register extends AppCompatActivity {
             }
         });
     }
+    //endregion
 
-    private static final String TAG = "Register";
+    //region Private Methods
 
     // Create a new user profile and associate it with the registered user
     private void createUserProfile(String userId, String userEmail) {
@@ -138,4 +144,5 @@ public class Register extends AppCompatActivity {
                     }
                 });
     }
+    //endregion
 }

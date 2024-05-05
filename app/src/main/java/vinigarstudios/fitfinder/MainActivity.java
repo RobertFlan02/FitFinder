@@ -26,20 +26,22 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 
+import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.search.Search;
 
 public class MainActivity extends AppCompatActivity {
-    FirebaseAuth auth;
-    Button logoutButton, uploadButton, searchButton;
-    ImageView imageView;
-    FirebaseUser user;
-    FirebaseFirestore db;
-    StorageReference storageRef;
+    private FirebaseAuth auth;
+    private Button logoutButton, uploadButton, searchButton;
+    private ImageView imageView;
+    private FirebaseUser user;
+    private FirebaseFirestore db;
+    private StorageReference storageRef;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
 
+    //region Override Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,23 +90,6 @@ public class MainActivity extends AppCompatActivity {
         checkStoragePermission();
     }
 
-    private void checkStoragePermission() {
-        // Gets permission to access devices storage
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    STORAGE_PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    private void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,6 +106,34 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+            }
+        }
+    }
+    //endregion
+
+    //region Private Methods
+    private void checkStoragePermission() {
+        // Gets permission to access devices storage
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    STORAGE_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    private void openImageChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
     }
 
     private void uploadImageToFirebaseStorage(Uri imageUri) {
@@ -179,14 +192,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
-            }
-        }
-    }
+    //endregion
 }

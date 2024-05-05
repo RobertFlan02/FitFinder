@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder;
+package vinigarstudios.fitfinder.loginregistration;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,13 +19,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Login extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
-    Button buttonLogin;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView textView;
+import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.R;
 
+public class Login extends AppCompatActivity {
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button buttonLogin;
+    private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
+    private TextView textView;
+
+    //region Override Methods
     @Override
     public void onStart() {
         super.onStart();
@@ -51,7 +55,7 @@ public class Login extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), vinigarstudios.fitfinder.Register.class);
+                Intent intent = new Intent(getApplicationContext(), Register.class);
                 startActivity(intent);
                 finish();
             }
@@ -95,4 +99,5 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+    //endregion
 }
