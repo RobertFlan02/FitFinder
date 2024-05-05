@@ -10,8 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.utility.VinigarCompatActivity;
 
-public class Search extends AppCompatActivity
+public class Search extends VinigarCompatActivity
 {
 
     //region Private Fields

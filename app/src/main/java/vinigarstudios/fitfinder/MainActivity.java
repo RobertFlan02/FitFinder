@@ -28,13 +28,11 @@ import java.io.ByteArrayOutputStream;
 
 import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.search.Search;
+import vinigarstudios.utility.VinigarCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth auth;
+public class MainActivity extends VinigarCompatActivity {
     private Button logoutButton, uploadButton, searchButton;
     private ImageView imageView;
-    private FirebaseUser user;
-    private FirebaseFirestore db;
     private StorageReference storageRef;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -46,20 +44,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        auth = FirebaseAuth.getInstance();
         logoutButton = findViewById(R.id.logoutButton);
         imageView = findViewById(R.id.imageView);
         uploadButton = findViewById(R.id.uploadButton);
         searchButton = findViewById(R.id.searchButton);
-        db = FirebaseFirestore.getInstance();
-        user = auth.getCurrentUser();
         storageRef = FirebaseStorage.getInstance().getReference().child("uploadedPhotos");
-
-        if (user == null){
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            startActivity(intent);
-            finish();
-        }
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
     private void storeImageUrlInFirestore(String imageUrl) {
         //stores the image url and profileUID in the firestore collection "Photos"
         Photo photo = new Photo(imageUrl, user.getUid());
-        db.collection("photos")
+        database.collection("photos")
                 .add(photo)
                 .addOnSuccessListener(new OnSuccessListener() {
                     @Override
