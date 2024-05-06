@@ -30,13 +30,12 @@
             android:layout_height="wrap_content"
             android:text="Search" />
 
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="118dp"
-            tools:srcCompat="@tools:sample/avatars" />
-
+        <!-- Add Profile Button -->
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile" />
 
     </LinearLayout>
 
@@ -49,6 +48,5 @@
         android:layout_marginBottom="2dp"
         android:text="+"
         android:textSize="28sp" />
-
 
 </RelativeLayout>
