@@ -28,11 +28,13 @@ import java.util.Map;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
-import vinigarstudios.utility.VinigarCompatActivity;
-public class Register extends VinigarCompatActivity {
+
+
+public class Register extends AppCompatActivity {
 
     private TextInputEditText editTextEmail, editTextPassword;
     private Button buttonReg;
+    private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private TextView textView;
     private static final String TAG = "Register";
@@ -53,6 +55,7 @@ public class Register extends VinigarCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonReg = findViewById(R.id.btn_register);
@@ -92,6 +95,7 @@ public class Register extends VinigarCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     // User registered successfully, now create user profile
+                                    FirebaseUser user = mAuth.getCurrentUser();
                                     if (user != null) {
                                         String userId = user.getUid();
                                         String userEmail = user.getEmail();
