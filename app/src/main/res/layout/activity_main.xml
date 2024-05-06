@@ -33,6 +33,13 @@
             android:layout_height="wrap_content"
             android:text="Search" />
 
+        <!-- Add Profile Button -->
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile" />
+
     </LinearLayout>
 
 <!--    <Button-->
@@ -61,6 +68,5 @@
         app:itemRippleColor="@android:color/transparent"
         app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_menu" />
-
 
 </RelativeLayout>

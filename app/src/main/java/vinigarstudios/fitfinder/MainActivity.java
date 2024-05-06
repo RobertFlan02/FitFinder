@@ -32,7 +32,7 @@ import vinigarstudios.fitfinder.search.Search;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class MainActivity extends VinigarCompatActivity {
-    private Button logoutButton, uploadButton, searchButton;
+    private Button logoutButton, uploadButton, searchButton, profileButton;
     private ImageView imageView;
     private StorageReference storageRef;
 
@@ -71,8 +71,9 @@ public class MainActivity extends VinigarCompatActivity {
         });
 
         logoutButton = findViewById(R.id.logoutButton);
-//        uploadButton = findViewById(R.id.uploadButton);
+        uploadButton = findViewById(R.id.uploadButton);
         searchButton = findViewById(R.id.searchButton);
+        profileButton = findViewById(R.id.profileButton); // Add profile button
         storageRef = FirebaseStorage.getInstance().getReference().child("uploadedPhotos");
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -93,13 +94,21 @@ public class MainActivity extends VinigarCompatActivity {
             }
         });
 
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageChooser();
+            }
+        });
 
-//        uploadButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openImageChooser();
-//            }
-//        });
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to ProfileActivity
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         checkStoragePermission();
     }
@@ -121,6 +130,7 @@ public class MainActivity extends VinigarCompatActivity {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
