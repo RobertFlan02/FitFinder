@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -71,9 +70,27 @@ public class ProfileActivity extends AppCompatActivity {
             } else return item.getItemId() == R.id.bottom_profile;
         });
 
+        profileImage = findViewById(R.id.profile_image);
+        editTextUsername = findViewById(R.id.editTextUsername);
+        textViewFollowerCount = findViewById(R.id.textViewFollowerCount);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        currentUserUID = mAuth.getCurrentUser().getUid();
+        storageRef = FirebaseStorage.getInstance().getReference().child("profileImages");
+
+        loadUserData();
+        loadProfileImage();
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageChooser();
+            }
+        });
     }
 
-    // Method to load the current username and follower count from Firestore and display them in the appropriate views
+    // This method loads the current users name and follower count from firestore and displays them in the appropriate fields
     private void loadUserData() {
         DocumentReference docRef = db.collection("profiles").document(currentUserUID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -85,10 +102,11 @@ public class ProfileActivity extends AppCompatActivity {
                         String username = document.getString("profileName");
                         long followerCount = document.getLong("followerCount");
 
-                        // Update the username in EditText
+                        // Updates the username
                         editTextUsername.setText(username);
-                        // Update the follower count in TextView
+                        // Updates the follower count
                         textViewFollowerCount.setText("Followers: " + followerCount);
+                        // error handling
                     } else {
                         Toast.makeText(ProfileActivity.this, "No such document", Toast.LENGTH_SHORT).show();
                     }
@@ -99,72 +117,53 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // Method to update the username in Firestore
-    private void updateUsername(String newUsername) {
-        DocumentReference docRef = db.collection("profiles").document(currentUserUID);
-        docRef.update("profileName", newUsername)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            // Check if image upload is also successful
-                            if (imageUri == null) {
-                                // If no image is uploaded, show single notification for user details update
-                                showNotification("User details updated successfully");
-                            }
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Failed to update username", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    // Called when the user selects an image from the gallery
+    // Used when the user uploads a new profile picture
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            // Get the selected image URI and set it to the ImageView
+            // Get the selected image URI and displays it
             imageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 profileImage.setImageBitmap(bitmap);
+                uploadProfilePhoto();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    // Method to open the image chooser (camera roll)
+    // Used to open the camera roll
     private void openImageChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE);
     }
 
-    // Method to load the profile image from Firebase Storage and display it in the ImageView
+    // Method to load the profile image from Firebase and display it
     private void loadProfileImage() {
         StorageReference photoRef = storageRef.child(currentUserUID + ".jpg");
         photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                // Load the image into the profileImage ImageView
+                // Loads the image
                 Glide.with(ProfileActivity.this)
                         .load(uri)
-                        .placeholder(R.drawable.greyicon) // Placeholder image
-                        .error(R.drawable.greyicon) // Error image in case of failure
+                        .placeholder(R.drawable.greyicon) // Default image
+                        .error(R.drawable.greyicon)
                         .into(profileImage);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                // Handle failure to load image by displaying default image
+                // In case of error display default image
                 profileImage.setImageResource(R.drawable.greyicon);
             }
         });
     }
 
-    // Method to upload the selected profile photo to Firebase Storage
+    // Uploads the selected profile photo to Firebase
     private void uploadProfilePhoto() {
         StorageReference photoRef = storageRef.child(currentUserUID + ".jpg");
         photoRef.putFile(imageUri)

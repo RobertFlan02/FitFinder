@@ -71,10 +71,8 @@ public class MainActivity extends VinigarCompatActivity {
         });
 
         logoutButton = findViewById(R.id.logoutButton);
-        uploadButton = findViewById(R.id.uploadButton);
         searchButton = findViewById(R.id.searchButton);
-        profileButton = findViewById(R.id.profileButton); // Add profile button
-        storageRef = FirebaseStorage.getInstance().getReference().child("uploadedPhotos");
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,21 +92,7 @@ public class MainActivity extends VinigarCompatActivity {
             }
         });
 
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImageChooser();
-            }
-        });
 
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to ProfileActivity
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
 
         checkStoragePermission();
     }
