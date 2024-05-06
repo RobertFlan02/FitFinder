@@ -127,7 +127,11 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ProfileActivity.this, "Username updated successfully", Toast.LENGTH_SHORT).show();
+                            // Check if image upload is also successful
+                            if (imageUri == null) {
+                                // If no image is uploaded, show single notification for user details update
+                                showNotification("User details updated successfully");
+                            }
                         } else {
                             Toast.makeText(ProfileActivity.this, "Failed to update username", Toast.LENGTH_SHORT).show();
                         }
@@ -193,7 +197,6 @@ public class ProfileActivity extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 // Update profileImageURL field in Firestore with the download URL
                                 updateProfileImageURL(uri.toString());
-                                Toast.makeText(ProfileActivity.this, "Photo uploaded successfully", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -213,7 +216,8 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(ProfileActivity.this, "Profile image URL updated successfully", Toast.LENGTH_SHORT).show();
+                        // Show single notification for user details update
+                        showNotification("User details updated successfully");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -222,5 +226,10 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Failed to update profile image URL", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    // Method to show notification
+    private void showNotification(String message) {
+        Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 }
