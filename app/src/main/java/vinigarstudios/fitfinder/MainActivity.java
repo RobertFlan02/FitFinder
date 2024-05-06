@@ -11,19 +11,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.ByteArrayOutputStream;
 
 import vinigarstudios.fitfinder.loginregistration.Login;
@@ -88,6 +92,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         checkStoragePermission();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                    return true;
+                case R.id.navigation_friends:
+                    startActivity(new Intent(MainActivity.this, FriendsActivity.class));
+                    return true;
+                case R.id.navigation_upload:
+                    startActivity(new Intent(MainActivity.this, UploadActivity.class));
+                    return true;
+                case R.id.navigation_profile:
+                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    return true;
+            }
+            return false;
+        });
     }
 
     @Override

@@ -8,4 +8,8 @@
     <string name="click_to_register">Click to register</string>
     <string name="logout">Logout</string>
     <string name="search" />
+    <string name="home">Home</string>
+    <string name="friends">Friends</string>
+    <string name="upload">Upload</string>
+    <string name="profile">Profile</string>
 </resources>
