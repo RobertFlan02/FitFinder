@@ -21,11 +21,19 @@ import java.util.List;
 
 public final class FirebaseHelper
 {
+    /**
+     * Gets the current users ID.
+     * @return current users ID from FireStore.
+     */
     public static String CurrentUserId()
     {
         return FirebaseAuth.getInstance().getUid();
     }
 
+    /**
+     * Gets the current users details.
+     * @return current users details from FireStoe.
+     */
     public static DocumentReference CurrentUserDetails()
     {
         return FirebaseFirestore.getInstance().collection("profiles").document(FirebaseHelper.CurrentUserId());
