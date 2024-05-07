@@ -11,5 +11,6 @@
     <color name="grey">#d2d2d2</color>
     <color name="grey1">#808080</color>
     <color name="bright_teal">#02bbfd</color>
+    <color name="lightGrey">#FF949494</color>
 
 </resources>
