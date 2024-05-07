@@ -43,7 +43,7 @@ public final class FirebaseHelper
                 .child(FirebaseHelper.GetCurrentUserId());
     }
 
-    public static StorageReference  GetOtherProfilePicStorageRef(String otherUserId){
+    public static StorageReference GetOtherProfilePicStorageRef(String otherUserId){
         return FirebaseStorage.getInstance().getReference().child("profileImageURL")
                 .child(otherUserId);
     }
