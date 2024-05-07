@@ -9,8 +9,15 @@
     android:padding="15dp"
     tools:context=".loginregistration.Register">
 
+  <ImageView
+      android:id="@+id/logo2"
+      android:layout_width="250dp"
+      android:layout_height="250dp"
+      android:scaleType="centerCrop"
+      android:src="@drawable/logo2"/>
+
   <TextView
-      android:text="@string/register"
+      android:text="@string/create_your_account"
       android:textSize="25sp"
       android:textStyle="bold"
       android:gravity="center"
@@ -61,15 +68,23 @@
       android:id="@+id/btn_register"
       android:text="@string/register"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+      android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
+      android:background="@drawable/button_background"/>
 
   <TextView
-      android:textSize="20sp"
-      android:textStyle="bold"
-      android:gravity="center"
-      android:layout_marginTop="20dp"
-      android:id="@+id/loginNow"
-      android:text="@string/click_to_login"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
+      android:id="@+id/textViewExistingAccount"
+      android:text="@string/already_have_an_account"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"/>
+
+  <Button
+      android:id="@+id/btn_loginNow"
+      android:text="@string/use_existing_login"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
+      android:background="@drawable/button_background"/>
+
 </LinearLayout>
