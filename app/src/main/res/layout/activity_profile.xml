@@ -77,16 +77,31 @@
             android:textColor="@android:color/black"/>
 
         <!-- Upload Photo Button -->
-
-
         <!-- Submit Button -->
-        <Button
-            android:id="@+id/submit_button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirm"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"/>
+            android:layout_below="@id/textViewFollowerCount"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log Out"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 
