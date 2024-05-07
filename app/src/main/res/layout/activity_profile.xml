@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="120dp"
             android:layout_marginEnd="120dp"
-            android:hint="Enter your username"
+            android:hint="Enter username"
             android:inputType="text"
             android:textColorHint="@android:color/black"
             android:gravity="center_horizontal"
