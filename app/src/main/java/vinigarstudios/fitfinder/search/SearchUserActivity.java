@@ -37,7 +37,7 @@ public class SearchUserActivity extends VinigarCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_search);
+        this.setContentView(R.layout.activity_search_user);
 
         this.itemsList = FirebaseHelper.GetListFromDatabase("profiles", "profileName");
         this.recyclerView = findViewById(R.id.searchUserRecyclerList);

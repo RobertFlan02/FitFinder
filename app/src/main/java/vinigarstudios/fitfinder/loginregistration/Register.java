@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,9 +26,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.fitfinder.models.UserModel;
+import vinigarstudios.utility.FirebaseHelper;
 
 
 public class Register extends AppCompatActivity {
@@ -37,6 +41,7 @@ public class Register extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private TextView textView;
+    private UserModel userModel;
     private static final String TAG = "Register";
 
     //region Override Methods
@@ -96,6 +101,7 @@ public class Register extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // User registered successfully, now create user profile
                                     FirebaseUser user = mAuth.getCurrentUser();
+                                    SetUsername();
                                     if (user != null) {
                                         String userId = user.getUid();
                                         String userEmail = user.getEmail();
@@ -143,6 +149,19 @@ public class Register extends AppCompatActivity {
                         Log.w(TAG, "Error creating user profile", e);
                     }
                 });
+    }
+
+    private void SetUsername(){
+
+        String username = "PLACEHOLDER USERNAME";
+        if (userModel != null)
+        {
+            userModel.SetUsername(username);
+        }
+        else
+        {
+            userModel = new UserModel(FirebaseHelper.GetCurrentUserId(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now());
+        }
     }
     //endregion
 }
