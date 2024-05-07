@@ -31,7 +31,7 @@ public final class FirebaseHelper
 
     /**
      * Gets the current users details.
-     * @return current users details from FireStoe.
+     * @return current users details from FireStore.
      */
     public static DocumentReference GetCurrentUserDetails()
     {

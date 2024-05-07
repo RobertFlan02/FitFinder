@@ -27,7 +27,6 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
     {
         super(options);
         this.context = context;
-
     }
 
     @Override
@@ -41,7 +40,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                 .addOnCompleteListener(t -> {
                     if(t.isSuccessful()){
                         Uri uri  = t.getResult();
-                        AndroidHelper.SetProfilePic(context,uri,holder.profilePic);
+                        AndroidHelper.SetProfilePic(context, uri, holder.profilePic);
                     }
                 });
 
@@ -63,8 +62,8 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
     protected static class UserModelViewHolder extends RecyclerView.ViewHolder
     {
-        private TextView usernameTextView;
-        private ImageView profilePic;
+        TextView usernameTextView;
+        ImageView profilePic;
         public UserModelViewHolder(@NonNull View itemView) {
             super(itemView);
             this.usernameTextView = itemView.findViewById(R.id.searchUsernameText);

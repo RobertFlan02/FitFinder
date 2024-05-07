@@ -22,6 +22,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -101,7 +103,6 @@ public class Register extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // User registered successfully, now create user profile
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    SetUsername();
                                     if (user != null) {
                                         String userId = user.getUid();
                                         String userEmail = user.getEmail();
@@ -110,6 +111,7 @@ public class Register extends AppCompatActivity {
 
                                     Toast.makeText(Register.this, "Account Made",
                                             Toast.LENGTH_SHORT).show();
+                                    SetData();
                                     Intent intent = new Intent(getApplicationContext(), Login.class);
                                     startActivity(intent);
                                     finish();
@@ -151,7 +153,7 @@ public class Register extends AppCompatActivity {
                 });
     }
 
-    private void SetUsername(){
+    private void SetData(){
 
         String username = "PLACEHOLDER USERNAME";
         if (userModel != null)
@@ -160,8 +162,11 @@ public class Register extends AppCompatActivity {
         }
         else
         {
-            userModel = new UserModel(FirebaseHelper.GetCurrentUserId(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now());
+            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now());
         }
+
+        FirebaseHelper.GetCurrentUserDetails().set(userModel);
+        DocumentReference check = FirebaseHelper.GetCurrentUserDetails();
     }
     //endregion
 }

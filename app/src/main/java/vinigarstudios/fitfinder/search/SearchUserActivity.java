@@ -26,7 +26,6 @@ public class SearchUserActivity extends VinigarCompatActivity
     //region Private Fields
 
     private RecyclerView recyclerView;
-    private List<String> itemsList;
     private SearchUserRecyclerAdapter recyclerAdapter;
 
     //endregion
@@ -39,7 +38,6 @@ public class SearchUserActivity extends VinigarCompatActivity
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_search_user);
 
-        this.itemsList = FirebaseHelper.GetListFromDatabase("profiles", "profileName");
         this.recyclerView = findViewById(R.id.searchUserRecyclerList);
     }
 
@@ -96,6 +94,7 @@ public class SearchUserActivity extends VinigarCompatActivity
         Query query = FirebaseHelper.GetAllProfilesCollectionReference()
                 .whereGreaterThanOrEqualTo("profileName",searchTerm)
                 .whereLessThanOrEqualTo("profileName",searchTerm+'\uf8ff');
+                .whereLessThanOrEqualTo("username",searchTerm+'\uf8ff');
 
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();
