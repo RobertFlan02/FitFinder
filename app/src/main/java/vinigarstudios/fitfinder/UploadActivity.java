@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import java.util.Date;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -161,7 +161,8 @@ public class UploadActivity extends VinigarCompatActivity {
                 // Image uploaded successfully
                 photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     // Image download URL retrieved successfully
-                    storeImageDataInFirestore(downloadUri.toString(), title, caption);
+                    Date timestamp = new Date(); // Get current timestamp
+                    storeImageDataInFirestore(downloadUri.toString(), title, caption, timestamp);
                 }).addOnFailureListener(e -> {
                     // Failed to retrieve download URL
                     Toast.makeText(UploadActivity.this, "Failed to retrieve download URL", Toast.LENGTH_SHORT).show();
@@ -176,11 +177,11 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
-    private void storeImageDataInFirestore(String imageUrl, String title, String caption) {
+    private void storeImageDataInFirestore(String imageUrl, String title, String caption, Date timestamp) {
         String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
 
-        // Create a Posts object with image URL, title, caption, and user UID
-        Posts posts = new Posts(imageUrl, uid, title, caption);
+        // Create a Posts object with image URL, title, caption, user UID, and timestamp
+        Posts posts = new Posts(imageUrl, uid, title, caption, 0, timestamp);
 
         // Add post to Firestore collection
         database.collection("posts")
