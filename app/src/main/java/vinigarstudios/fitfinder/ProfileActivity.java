@@ -3,7 +3,7 @@ package vinigarstudios.fitfinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,10 +23,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 
+import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class ProfileActivity extends VinigarCompatActivity {
@@ -93,10 +93,21 @@ public class ProfileActivity extends VinigarCompatActivity {
                 updateUsername(newUsername);
             }
         });
+
+        // Add onClick listener to the logout button
+        Button logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
-
-    // This method loads the current users name and follower count from firestore and displays them in the appropriate fields
+    // This method loads the current user's name and follower count from Firestore and displays them in the appropriate fields
     private void loadUserData() {
         database.collection("profiles").document(currentUserUID).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -123,7 +134,7 @@ public class ProfileActivity extends VinigarCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            // Get the selected image URI and displays it
+            // Get the selected image URI and display it
             imageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
@@ -158,7 +169,7 @@ public class ProfileActivity extends VinigarCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                // In case of error display default image
+                // In case of error, display default image
                 profileImage.setImageResource(R.drawable.greyicon);
             }
         });

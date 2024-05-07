@@ -48,18 +48,10 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        logoutButton = findViewById(R.id.logoutButton);
+
         searchButton = findViewById(R.id.searchButton);
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
