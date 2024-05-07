@@ -146,11 +146,11 @@ public class UploadActivity extends VinigarCompatActivity {
         String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
 
         // Create a Photo object with image URL and user UID
-        Photo photo = new Photo(imageUrl, uid);
+        Posts posts = new Posts(imageUrl, uid,"", "");
 
         // Add photo to Firestore collection
-        database.collection("photos")
-                .add(photo)
+        database.collection("posts")
+                .add(posts)
                 .addOnSuccessListener(documentReference -> {
                     // Image URL stored in Firestore successfully
                     Toast.makeText(UploadActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
