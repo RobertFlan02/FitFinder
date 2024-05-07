@@ -114,7 +114,6 @@ public class Register extends AppCompatActivity {
                                     if (user != null) {
                                         String userId = user.getUid();
                                         String userEmail = user.getEmail();
-                                        createUserProfile(userId, userEmail);
                                     }
 
                                     Toast.makeText(Register.this, "Account Made",
@@ -133,15 +132,17 @@ public class Register extends AppCompatActivity {
             }
         });
     }
-    //endregion
+    //endregionprofileName
 
     //region Private Methods
 
     // Create a new user profile and associate it with the registered user
+    //Use SetData instead
+    @Deprecated
     private void createUserProfile(String userId, String userEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> user = new HashMap<>();
-        user.put("profileName", username); // Initialize with empty profile name
+        user.put("", username); // Initialize with empty profile name
         user.put("profileImageURL", ""); // Initialize with empty profile image URL
         user.put("followerCount", 0); // Initialize follower count to 0
 
@@ -163,7 +164,6 @@ public class Register extends AppCompatActivity {
 
     private void SetData(){
 
-        String username = "PLACEHOLDER USERNAME";
         if (userModel != null)
         {
             userModel.SetUsername(username);
@@ -174,7 +174,6 @@ public class Register extends AppCompatActivity {
         }
 
         FirebaseHelper.GetCurrentUserDetails().set(userModel);
-        DocumentReference check = FirebaseHelper.GetCurrentUserDetails();
     }
     //endregion
 }

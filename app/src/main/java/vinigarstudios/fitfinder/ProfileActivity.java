@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class ProfileActivity extends VinigarCompatActivity {
