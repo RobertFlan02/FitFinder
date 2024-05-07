@@ -9,4 +9,10 @@
     <string name="logout">Logout</string>
     <string name="search" />
     <string name="username">Username</string>
+    <string name="create_account">Create Account</string>
+    <string name="use_existing_login">Use Existing Login</string>
+    <string name="new_user">New User?</string>
+    <string name="already_have_an_account">Already Have an Account?</string>
+    <string name="welcome_to_fitfinder">Welcome to FitFinder!</string>
+    <string name="create_your_account">Create Your Account</string>
 </resources>
