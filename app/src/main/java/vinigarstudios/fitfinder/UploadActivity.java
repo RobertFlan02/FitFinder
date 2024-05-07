@@ -38,10 +38,7 @@ public class UploadActivity extends VinigarCompatActivity {
     private Button uploadButton;
     private ImageView imageView;
     private StorageReference storageRef;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore database;
     private Uri selectedImageUri;
-
     private EditText editTextTitle;
     private EditText editTextCaption;
 
@@ -55,9 +52,6 @@ public class UploadActivity extends VinigarCompatActivity {
 
         imageView = findViewById(R.id.imageView_placeholder);
 
-        // Initialize Firebase components
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
 
         // Find the uploadButton by its ID
