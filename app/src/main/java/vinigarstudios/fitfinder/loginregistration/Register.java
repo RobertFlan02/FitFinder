@@ -22,8 +22,6 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -31,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.utility.NotificationHandler;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.FirebaseHelper;
@@ -115,6 +114,8 @@ public class Register extends AppCompatActivity {
                                         String userId = user.getUid();
                                         String userEmail = user.getEmail();
                                     }
+
+                                    NotificationHandler.sendNotification(userModel.GetUserId(), "Welcome to FitFinder", "Your account has been successfully created");
 
                                     Toast.makeText(Register.this, "Account Made",
                                             Toast.LENGTH_SHORT).show();
