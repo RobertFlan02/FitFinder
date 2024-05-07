@@ -17,7 +17,7 @@ import vinigarstudios.fitfinder.search.SearchUserActivity;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private Button logoutButton, searchButton;
+    private Button logoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +48,15 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+        logoutButton = findViewById(R.id.logoutButton);
 
-        searchButton = findViewById(R.id.searchButton);
-
-
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SearchUserActivity.class);
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
