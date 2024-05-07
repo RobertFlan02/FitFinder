@@ -138,6 +138,14 @@ public class UploadActivity extends VinigarCompatActivity {
             Toast.makeText(this, "Title and caption cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (title.length() > 60) {
+            Toast.makeText(this, "Title cannot exceed 60 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (caption.length() > 150) {
+            Toast.makeText(this, "Caption cannot exceed 150 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Check if an image is selected
         if (selectedImageUri == null) {
