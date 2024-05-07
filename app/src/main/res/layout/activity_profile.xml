@@ -6,62 +6,91 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
-    <!-- Edit Text for Username -->
-    <EditText
-        android:id="@+id/editTextUsername"
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background3"
+        android:scaleType="centerCrop"/>
+
+    <!-- Profile Title -->
+    <LinearLayout
+        android:id="@+id/profile_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:hint="Enter your username"
-        android:inputType="text"
-        android:gravity="center_horizontal"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"/>
+        android:background="@color/purple_200"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- Profile Image -->
-    <ImageView
-        android:id="@+id/profile_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/greyicon"
-        android:layout_below="@id/editTextUsername"
-        android:layout_centerHorizontal="true"/>
+        <!-- Profile Title TextView -->
+        <TextView
+            android:id="@+id/textViewProfileTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center"/>
 
-    <!-- Follower Count TextView -->
-    <TextView
-        android:id="@+id/textViewFollowerCount"
-        android:layout_width="wrap_content"
+    </LinearLayout>
+
+    <!-- Container for elements below profile title -->
+    <LinearLayout
+        android:id="@+id/elements_below_profile_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Followers: 0"
-        android:textSize="18sp"/>
+        android:layout_below="@id/profile_title_layout"
+        android:orientation="vertical"
+        android:layout_marginTop="15dp">
 
-    <!-- Upload Photo Button -->
-    <Button
-        android:id="@+id/upload_photo_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Upload Photo"
-        android:layout_below="@id/textViewFollowerCount"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/greyicon"
+            android:layout_gravity="center_horizontal"/>
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_below="@id/upload_photo_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        <!-- EditText for Username -->
+        <EditText
+            android:id="@+id/editTextUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="120dp"
+            android:layout_marginEnd="120dp"
+            android:hint="Enter your username"
+            android:inputType="text"
+            android:textColorHint="@android:color/black"
+            android:gravity="center_horizontal"
+            />
 
+        <!-- Follower Count TextView -->
+        <TextView
+            android:id="@+id/textViewFollowerCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Followers: 0"
+            android:textSize="18sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black"/>
+
+        <!-- Upload Photo Button -->
+
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+
+    <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
