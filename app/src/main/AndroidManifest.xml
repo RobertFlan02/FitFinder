@@ -37,6 +37,11 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Material3.Dark" />
         <activity
+            android:name=".search.SearchUserActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Material3.Dark" />
+        <activity
             android:name=".loginregistration.Login"
             android:exported="true"
             android:theme="@style/Theme.Material3.Dark.NoActionBar">

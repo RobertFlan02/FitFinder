@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 
 import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.search.Search;
+import vinigarstudios.fitfinder.search.SearchUserActivity;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class MainActivity extends VinigarCompatActivity {
@@ -63,7 +64,7 @@ public class MainActivity extends VinigarCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Search.class);
+                Intent intent = new Intent(getApplicationContext(), SearchUserActivity.class);
                 startActivity(intent);
             }
         });
