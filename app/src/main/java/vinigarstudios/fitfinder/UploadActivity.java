@@ -1,8 +1,6 @@
 package vinigarstudios.fitfinder;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,25 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-import java.util.Date;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
-import vinigarstudios.fitfinder.loginregistration.Login;
-import vinigarstudios.fitfinder.search.Search;
+import vinigarstudios.fitfinder.models.PostsModel;
+import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class UploadActivity extends VinigarCompatActivity {
@@ -161,7 +152,8 @@ public class UploadActivity extends VinigarCompatActivity {
 
             // Storage reference
             String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
-            StorageReference photoRef = storageRef.child(uid + "/" + selectedImageUri.getLastPathSegment());
+            StorageReference imagesRef = storageRef.child("uploadedImages"); // Reference to "uploadedImages" folder
+            StorageReference photoRef = imagesRef.child(uid + "/" + selectedImageUri.getLastPathSegment());
 
             UploadTask uploadTask = photoRef.putBytes(data);
 
@@ -188,18 +180,12 @@ public class UploadActivity extends VinigarCompatActivity {
         String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
 
         // Create a Posts object with image URL, title, caption, user UID, and timestamp
-        PostsModel posts = new PostsModel(imageUrl, uid, title, caption, 0);
+        PostsModel post = new PostsModel(imageUrl, uid, title, caption, 0);
 
         // Add post to Firestore collection
-        database.collection("posts")
-                .add(posts)
-                .addOnSuccessListener(documentReference -> {
-                    // Post data stored in Firestore successfully
-                    Toast.makeText(UploadActivity.this, "Post created successfully", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    // Failed to store post data in Firestore
-                    Toast.makeText(UploadActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
-                });
+        FirebaseHelper.UploadModelToDatabase(this, "posts", post);
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        finish();
     }
 }

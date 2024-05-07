@@ -1,6 +1,7 @@
-package vinigarstudios.fitfinder;
+package vinigarstudios.fitfinder.models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PostsModel {
     private String photoURL;
@@ -21,6 +22,10 @@ public class PostsModel {
         this.caption = caption;
         this.likes = likes;
         this.timestamp = Timestamp.now();
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
 
     public String getPhotoURL() {
