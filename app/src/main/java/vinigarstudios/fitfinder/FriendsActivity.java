@@ -7,7 +7,9 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class FriendsActivity extends AppCompatActivity {
+import vinigarstudios.utility.VinigarCompatActivity;
+
+public class FriendsActivity extends VinigarCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

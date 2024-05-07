@@ -9,12 +9,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Document;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +24,35 @@ public final class FirebaseHelper
      * Gets the current users ID.
      * @return current users ID from FireStore.
      */
-    public static String CurrentUserId()
+    public static String GetCurrentUserId()
     {
         return FirebaseAuth.getInstance().getUid();
     }
 
     /**
      * Gets the current users details.
-     * @return current users details from FireStoe.
+     * @return current users details from FireStore.
      */
-    public static DocumentReference CurrentUserDetails()
+    public static DocumentReference GetCurrentUserDetails()
     {
-        return FirebaseFirestore.getInstance().collection("profiles").document(FirebaseHelper.CurrentUserId());
+        return FirebaseFirestore.getInstance().collection("profiles").document(FirebaseHelper.GetCurrentUserId());
     }
+
+    public static StorageReference GetCurrentProfilePicStorageRef(){
+        return FirebaseStorage.getInstance().getReference().child("profileImageURL")
+                .child(FirebaseHelper.GetCurrentUserId());
+    }
+
+    public static StorageReference  GetOtherProfilePicStorageRef(String otherUserId){
+        return FirebaseStorage.getInstance().getReference().child("profileImageURL")
+                .child(otherUserId);
+    }
+
+    public static CollectionReference GetAllProfilesCollectionReference()
+    {
+        return FirebaseFirestore.getInstance().collection("profiles");
+    }
+
 
     /**
      * Gets a list of fields from the database e.g. All profile names.
@@ -67,5 +82,4 @@ public final class FirebaseHelper
                 });
         return listOfResults;
     }
-
 }

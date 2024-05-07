@@ -38,6 +38,7 @@ public class VinigarCompatActivity extends AppCompatActivity {
         }
     }
 
+    //Getters are just here so if team do .Get it shows what they can get. Feel free to straight up use .database or .user or .mAuth/
     /**
      * Gets the Auth.
      * @return mAuth

@@ -32,14 +32,14 @@ import java.io.IOException;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ProfileActivity extends AppCompatActivity {
+import vinigarstudios.utility.VinigarCompatActivity;
+
+public class ProfileActivity extends VinigarCompatActivity {
 
     private static final int PICK_IMAGE = 1;
     private ImageView profileImage;
     private EditText editTextUsername;
     private TextView textViewFollowerCount;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
     private String currentUserUID;
     private Uri imageUri;
     private StorageReference storageRef;
@@ -74,8 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         textViewFollowerCount = findViewById(R.id.textViewFollowerCount);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
         currentUserUID = mAuth.getCurrentUser().getUid();
         storageRef = FirebaseStorage.getInstance().getReference().child("profileImages");
 
@@ -92,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // This method loads the current users name and follower count from firestore and displays them in the appropriate fields
     private void loadUserData() {
-        DocumentReference docRef = db.collection("profiles").document(currentUserUID);
+        DocumentReference docRef = database.collection("profiles").document(currentUserUID);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -190,7 +188,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Method to update the profileImageURL field in Firestore with the download URL
     private void updateProfileImageURL(String imageURL) {
-        db.collection("profiles").document(currentUserUID)
+        database.collection("profiles").document(currentUserUID)
                 .update("profileImageURL", imageURL)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

@@ -26,6 +26,8 @@ import vinigarstudios.fitfinder.R;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
+@Deprecated
+//Use SearchUserAcitivity instead. RecyclerView > ListView.
 public class Search extends VinigarCompatActivity
 {
 

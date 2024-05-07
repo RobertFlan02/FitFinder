@@ -18,16 +18,22 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.fitfinder.models.UserModel;
+import vinigarstudios.utility.FirebaseHelper;
 
 
 public class Register extends AppCompatActivity {
@@ -37,6 +43,7 @@ public class Register extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private TextView textView;
+    private UserModel userModel;
     private static final String TAG = "Register";
     private String username;
 
@@ -112,6 +119,7 @@ public class Register extends AppCompatActivity {
 
                                     Toast.makeText(Register.this, "Account Made",
                                             Toast.LENGTH_SHORT).show();
+                                    SetData();
                                     Intent intent = new Intent(getApplicationContext(), Login.class);
                                     startActivity(intent);
                                     finish();
@@ -151,6 +159,22 @@ public class Register extends AppCompatActivity {
                         Log.w(TAG, "Error creating user profile", e);
                     }
                 });
+    }
+
+    private void SetData(){
+
+        String username = "PLACEHOLDER USERNAME";
+        if (userModel != null)
+        {
+            userModel.SetUsername(username);
+        }
+        else
+        {
+            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now());
+        }
+
+        FirebaseHelper.GetCurrentUserDetails().set(userModel);
+        DocumentReference check = FirebaseHelper.GetCurrentUserDetails();
     }
     //endregion
 }
