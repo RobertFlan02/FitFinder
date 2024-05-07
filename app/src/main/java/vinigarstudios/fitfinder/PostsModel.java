@@ -1,26 +1,26 @@
 package vinigarstudios.fitfinder;
 
-import java.util.Date;
+import com.google.firebase.Timestamp;
 
-public class Posts {
+public class PostsModel {
     private String photoURL;
     private String profileUID;
     private String title;
     private String caption;
     private int likes;
-    private Date timestamp; // New field for timestamp
+    private Timestamp timestamp; // New field for timestamp
 
-    public Posts() {
+    public PostsModel() {
         // Empty constructor needed for Firestore
     }
 
-    public Posts(String photoURL, String profileUID, String title, String caption, int likes, Date timestamp) {
+    public PostsModel(String photoURL, String profileUID, String title, String caption, int likes) {
         this.photoURL = photoURL;
         this.profileUID = profileUID;
         this.title = title;
         this.caption = caption;
         this.likes = likes;
-        this.timestamp = timestamp;
+        this.timestamp = Timestamp.now();
     }
 
     public String getPhotoURL() {
@@ -63,11 +63,5 @@ public class Posts {
         this.likes = likes;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
 }

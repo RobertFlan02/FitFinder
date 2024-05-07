@@ -169,8 +169,7 @@ public class UploadActivity extends VinigarCompatActivity {
                 // Image uploaded successfully
                 photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     // Image download URL retrieved successfully
-                    Date timestamp = new Date(); // Get current timestamp
-                    storeImageDataInFirestore(downloadUri.toString(), title, caption, timestamp);
+                    storeImageDataInFirestore(downloadUri.toString(), title, caption);
                 }).addOnFailureListener(e -> {
                     // Failed to retrieve download URL
                     Toast.makeText(UploadActivity.this, "Failed to retrieve download URL", Toast.LENGTH_SHORT).show();
@@ -185,11 +184,11 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
-    private void storeImageDataInFirestore(String imageUrl, String title, String caption, Date timestamp) {
+    private void storeImageDataInFirestore(String imageUrl, String title, String caption) {
         String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
 
         // Create a Posts object with image URL, title, caption, user UID, and timestamp
-        Posts posts = new Posts(imageUrl, uid, title, caption, 0, timestamp);
+        PostsModel posts = new PostsModel(imageUrl, uid, title, caption, 0);
 
         // Add post to Firestore collection
         database.collection("posts")
