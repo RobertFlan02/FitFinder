@@ -18,6 +18,11 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import vinigarstudios.fitfinder.models.UserModel;
+
+/**
+ * Helpers class for FireStore. Contains useful methods usually to get data from the database.
+ */
 public final class FirebaseHelper
 {
     /**
@@ -38,16 +43,39 @@ public final class FirebaseHelper
         return FirebaseFirestore.getInstance().collection("profiles").document(FirebaseHelper.GetCurrentUserId());
     }
 
+    /**
+     * Gets the details of user with {@code userId}.
+     * @param userId The user Id of the user you're trying to get the details for.
+     * @return User details of userId.
+     */
+    public static DocumentReference GetOtherUserDetails(String userId)
+    {
+        return FirebaseFirestore.getInstance().collection("profiles").document(userId);
+    }
+
+    /**
+     * Get path to the profileImage of current User.
+     * @return profileImageURL of current user.
+     */
     public static StorageReference GetCurrentProfilePicStorageRef(){
         return FirebaseStorage.getInstance().getReference().child("profileImageURL")
                 .child(FirebaseHelper.GetCurrentUserId());
     }
 
+    /**
+     * Get path to the profileImage of other User.
+     * @param otherUserId The users Id.
+     * @return profileImageUrl of otherUser.
+     */
     public static StorageReference GetOtherProfilePicStorageRef(String otherUserId){
         return FirebaseStorage.getInstance().getReference().child("profileImageURL")
                 .child(otherUserId);
     }
 
+    /**
+     * Gets the collection "profiles"
+     * @return profiles collection
+     */
     public static CollectionReference GetAllProfilesCollectionReference()
     {
         return FirebaseFirestore.getInstance().collection("profiles");
@@ -81,5 +109,23 @@ public final class FirebaseHelper
                     }
                 });
         return listOfResults;
+    }
+
+    /**
+     * Gets the UserModel of the current user -> UserModel holds the Users data.
+     * @return Current Users UserModel.
+     */
+    public static UserModel GetCurrentUserModel()
+    {
+        return FirebaseHelper.GetCurrentUserDetails().get().getResult().toObject(UserModel.class);
+    }
+
+    /**
+     * Gets the UserModel of a user -> UserModel holds the Users data.
+     * @return Users(userId) UserModel.
+     */
+    public static UserModel GetOtherUserModel(String userId)
+    {
+        return FirebaseHelper.GetOtherUserDetails(userId).get().getResult().toObject(UserModel.class);
     }
 }
