@@ -32,12 +32,13 @@ import vinigarstudios.fitfinder.R;
 
 public class Register extends AppCompatActivity {
 
-    private TextInputEditText editTextEmail, editTextPassword;
+    private TextInputEditText editTextUsername, editTextEmail, editTextPassword;
     private Button buttonReg;
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private TextView textView;
     private static final String TAG = "Register";
+    private String username;
 
     //region Override Methods
     @Override
@@ -56,6 +57,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
+        editTextUsername = findViewById(R.id.username);
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonReg = findViewById(R.id.btn_register);
@@ -75,8 +77,14 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
                 String email, password;
+                username = String.valueOf(editTextUsername.getText());
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
+
+                if (TextUtils.isEmpty(username)){
+                    Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (TextUtils.isEmpty(email)){
                     Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
@@ -125,7 +133,7 @@ public class Register extends AppCompatActivity {
     private void createUserProfile(String userId, String userEmail) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> user = new HashMap<>();
-        user.put("profileName", ""); // Initialize with empty profile name
+        user.put("profileName", username); // Initialize with empty profile name
         user.put("profileImageURL", ""); // Initialize with empty profile image URL
         user.put("followerCount", 0); // Initialize follower count to 0
 

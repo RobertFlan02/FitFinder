@@ -8,4 +8,5 @@
     <string name="click_to_register">Click to register</string>
     <string name="logout">Logout</string>
     <string name="search" />
+    <string name="username">Username</string>
 </resources>
