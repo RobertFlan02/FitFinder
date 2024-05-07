@@ -12,6 +12,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import org.checkerframework.framework.qual.Unused;
+
 import java.util.List;
 
 import vinigarstudios.fitfinder.R;
@@ -19,7 +21,7 @@ import vinigarstudios.fitfinder.adapter.SearchUserRecyclerAdapter;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.VinigarCompatActivity;
-
+//Unused class since searching is now in friends. Might use later.
 public class SearchUserActivity extends VinigarCompatActivity
 {
 
