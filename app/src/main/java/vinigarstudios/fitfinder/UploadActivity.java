@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,6 +40,10 @@ public class UploadActivity extends VinigarCompatActivity {
     private StorageReference storageRef;
     private FirebaseAuth mAuth;
     private FirebaseFirestore database;
+    private Uri selectedImageUri;
+
+    private EditText editTextTitle;
+    private EditText editTextCaption;
 
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
@@ -47,6 +52,8 @@ public class UploadActivity extends VinigarCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+
+        imageView = findViewById(R.id.imageView_placeholder);
 
         // Initialize Firebase components
         mAuth = FirebaseAuth.getInstance();
@@ -62,6 +69,22 @@ public class UploadActivity extends VinigarCompatActivity {
             public void onClick(View v) {
                 // When the button is clicked, open image chooser
                 openImageChooser();
+            }
+        });
+
+        // Find the EditText fields by their IDs
+        editTextTitle = findViewById(R.id.editText_title);
+        editTextCaption = findViewById(R.id.editText_caption);
+
+        // Find the create post button by its ID
+        Button buttonCreatePost = findViewById(R.id.button_create_post);
+
+        // Set an OnClickListener to the create post button
+        buttonCreatePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // When the button is clicked, upload image and post data to Firestore
+                uploadImageAndPostData();
             }
         });
 
@@ -102,24 +125,41 @@ public class UploadActivity extends VinigarCompatActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_PICK && data != null) {
-                Uri selectedImageUri = data.getData();
-                uploadImageToFirebaseStorage(selectedImageUri);
+                selectedImageUri = data.getData();
+                // Set the selected image to the ImageView
+                imageView.setImageURI(selectedImageUri);
             }
         } else {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void uploadImageToFirebaseStorage(Uri imageUri) {
+    private void uploadImageAndPostData() {
+        // Retrieve the text from title and caption fields
+        String title = editTextTitle.getText().toString();
+        String caption = editTextCaption.getText().toString();
+
+        // Check if title and caption are not empty
+        if (title.isEmpty() || caption.isEmpty()) {
+            Toast.makeText(this, "Title and caption cannot be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check if an image is selected
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] data = baos.toByteArray();
 
             // Storage reference
             String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
-            StorageReference photoRef = storageRef.child(uid + "/" + imageUri.getLastPathSegment());
+            StorageReference photoRef = storageRef.child(uid + "/" + selectedImageUri.getLastPathSegment());
 
             UploadTask uploadTask = photoRef.putBytes(data);
 
@@ -127,7 +167,7 @@ public class UploadActivity extends VinigarCompatActivity {
                 // Image uploaded successfully
                 photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     // Image download URL retrieved successfully
-                    storeImageUrlInFirestore(downloadUri.toString());
+                    storeImageDataInFirestore(downloadUri.toString(), title, caption);
                 }).addOnFailureListener(e -> {
                     // Failed to retrieve download URL
                     Toast.makeText(UploadActivity.this, "Failed to retrieve download URL", Toast.LENGTH_SHORT).show();
@@ -142,22 +182,22 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
-    private void storeImageUrlInFirestore(String imageUrl) {
+    private void storeImageDataInFirestore(String imageUrl, String title, String caption) {
         String uid = mAuth.getCurrentUser().getUid(); // Get current user's UID
 
-        // Create a Photo object with image URL and user UID
-        Posts posts = new Posts(imageUrl, uid,"", "");
+        // Create a Posts object with image URL, title, caption, and user UID
+        Posts posts = new Posts(imageUrl, uid, title, caption);
 
-        // Add photo to Firestore collection
+        // Add post to Firestore collection
         database.collection("posts")
                 .add(posts)
                 .addOnSuccessListener(documentReference -> {
-                    // Image URL stored in Firestore successfully
-                    Toast.makeText(UploadActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                    // Post data stored in Firestore successfully
+                    Toast.makeText(UploadActivity.this, "Post created successfully", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    // Failed to store image URL in Firestore
-                    Toast.makeText(UploadActivity.this, "Failed to store image URL in Firestore", Toast.LENGTH_SHORT).show();
+                    // Failed to store post data in Firestore
+                    Toast.makeText(UploadActivity.this, "Failed to create post", Toast.LENGTH_SHORT).show();
                 });
     }
 }
