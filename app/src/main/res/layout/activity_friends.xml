@@ -7,13 +7,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".FriendsActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchUserRecyclerList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Friends"
         android:textColor="@color/lavender"
         android:layout_centerInParent="true"
-        android:textSize="36sp" />
+        android:textSize="36sp"
+        android:id="@+id/friendsActivityText"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
