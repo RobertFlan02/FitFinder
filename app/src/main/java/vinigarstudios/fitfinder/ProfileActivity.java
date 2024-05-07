@@ -10,19 +10,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -30,9 +27,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
 public class ProfileActivity extends VinigarCompatActivity {
@@ -44,6 +38,7 @@ public class ProfileActivity extends VinigarCompatActivity {
     private String currentUserUID;
     private Uri imageUri;
     private StorageReference storageRef;
+    private FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +72,7 @@ public class ProfileActivity extends VinigarCompatActivity {
 
         currentUserUID = mAuth.getCurrentUser().getUid();
         storageRef = FirebaseStorage.getInstance().getReference().child("profileImages");
+        database = FirebaseFirestore.getInstance();
 
         loadUserData();
         loadProfileImage();
@@ -87,33 +83,38 @@ public class ProfileActivity extends VinigarCompatActivity {
                 openImageChooser();
             }
         });
+
+        // Add onClick listener to the submit button
+        Button submitButton = findViewById(R.id.submit_button);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newUsername = editTextUsername.getText().toString();
+                updateUsername(newUsername);
+            }
+        });
     }
+
 
     // This method loads the current users name and follower count from firestore and displays them in the appropriate fields
     private void loadUserData() {
-        DocumentReference docRef = database.collection("profiles").document(currentUserUID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        String username = document.getString("profileName");
-                        long followerCount = document.getLong("followerCount");
+        database.collection("profiles").document(currentUserUID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String username = documentSnapshot.getString("username");
+                        long followerCount = documentSnapshot.getLong("followerCount");
 
                         // Updates the username
                         editTextUsername.setText(username);
                         // Updates the follower count
                         textViewFollowerCount.setText("Followers: " + followerCount);
-                        // error handling
                     } else {
                         Toast.makeText(ProfileActivity.this, "No such document", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Failed with: " + task.getException(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(ProfileActivity.this, "Failed with: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     // Used when the user uploads a new profile picture
@@ -127,7 +128,6 @@ public class ProfileActivity extends VinigarCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 profileImage.setImageBitmap(bitmap);
-                uploadProfilePhoto();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -136,8 +136,10 @@ public class ProfileActivity extends VinigarCompatActivity {
 
     // Used to open the camera roll
     private void openImageChooser() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, PICK_IMAGE);
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
     // Method to load the profile image from Firebase and display it
@@ -162,52 +164,23 @@ public class ProfileActivity extends VinigarCompatActivity {
         });
     }
 
-    // Uploads the selected profile photo to Firebase
-    private void uploadProfilePhoto() {
-        StorageReference photoRef = storageRef.child(currentUserUID + ".jpg");
-        photoRef.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get the download URL of the uploaded image
-                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                // Update profileImageURL field in Firestore with the download URL
-                                updateProfileImageURL(uri.toString());
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProfileActivity.this, "Failed to upload photo", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    // Method to update the profileImageURL field in Firestore with the download URL
-    private void updateProfileImageURL(String imageURL) {
+    // Method to update the username in the Firebase database
+    private void updateUsername(String newUsername) {
         database.collection("profiles").document(currentUserUID)
-                .update("profileImageURL", imageURL)
+                .update("username", newUsername)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // Show single notification for user details update
-                        showNotification("User details updated successfully");
+                        // Show notification for username update
+                        Toast.makeText(ProfileActivity.this, "User details updated successfully", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProfileActivity.this, "Failed to update profile image URL", Toast.LENGTH_SHORT).show();
+                        // Show notification for username update failure
+                        Toast.makeText(ProfileActivity.this, "Failed to update username", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    // Method to show notification
-    private void showNotification(String message) {
-        Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 }
