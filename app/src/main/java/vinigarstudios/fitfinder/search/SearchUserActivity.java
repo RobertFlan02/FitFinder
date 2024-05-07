@@ -92,8 +92,7 @@ public class SearchUserActivity extends VinigarCompatActivity
 
         this.recyclerView = findViewById(R.id.searchUserRecyclerList);
         Query query = FirebaseHelper.GetAllProfilesCollectionReference()
-                .whereGreaterThanOrEqualTo("profileName",searchTerm)
-                .whereLessThanOrEqualTo("profileName",searchTerm+'\uf8ff');
+                .whereGreaterThanOrEqualTo("username",searchTerm)
                 .whereLessThanOrEqualTo("username",searchTerm+'\uf8ff');
 
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
