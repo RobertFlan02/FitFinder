@@ -67,7 +67,7 @@ public final class FirebaseHelper
      * @param otherUserId The users Id.
      * @return profileImageUrl of otherUser.
      */
-    public static StorageReference  GetOtherProfilePicStorageRef(String otherUserId){
+    public static StorageReference GetOtherProfilePicStorageRef(String otherUserId){
         return FirebaseStorage.getInstance().getReference().child("profileImageURL")
                 .child(otherUserId);
     }
