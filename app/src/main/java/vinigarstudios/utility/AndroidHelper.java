@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+
+import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import com.google.firebase.firestore.auth.User;
 
@@ -39,6 +41,26 @@ public class AndroidHelper
         userModel.setProfileImageURL(intent.getStringExtra("profileImageURL"));
 
         return userModel;
+    }
+
+    public static void PassPostModelAsIntent(Intent intent, PostsModel model)
+    {
+        intent.putExtra("caption",model.getCaption());
+        intent.putExtra("likes",model.getLikes());
+        intent.putExtra("photoURL",model.getPhotoURL());
+        intent.putExtra("profileUID",model.getProfileUID());
+        intent.putExtra("timestamp",model.getTimestamp());
+        intent.putExtra("title",model.getTitle());
+    }
+
+    public static PostsModel GetPostsModelFromIntent(Intent intent)
+    {
+        PostsModel postsModel = new PostsModel();
+        postsModel.setCaption(intent.getStringExtra("caption"));
+        postsModel.setLikes(intent.getIntExtra("likes", 0));
+        postsModel.setPhotoURL(intent.getStringExtra("photoURL"));
+        postsModel.setProfileUID(intent.getStringExtra("profileUID"));
+        return postsModel;
     }
 
     public static void SetProfilePic(Context context, Uri imageUri, ImageView imageView)

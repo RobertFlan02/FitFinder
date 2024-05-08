@@ -1,9 +1,12 @@
 package vinigarstudios.fitfinder.models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class PostsModel {
+import java.util.ArrayList;
+
+public class PostsModel implements IModel {
     private String photoURL;
     private String profileUID;
     private String title;
@@ -11,6 +14,9 @@ public class PostsModel {
     private int likes;
     private Timestamp timestamp; // New field for timestamp
     private UserModel userModel; // New field for UserModel
+    private String postId;
+    private ArrayList<String> userIDsWhoLiked;
+    private static int postsIdIncrement;
 
     public PostsModel() {
         // Empty constructor needed for Firestore
@@ -23,6 +29,17 @@ public class PostsModel {
         this.caption = caption;
         this.likes = likes;
         this.timestamp = Timestamp.now();
+        this.postId = Integer.toString(postsIdIncrement);
+        this.userIDsWhoLiked = new ArrayList<>();
+        postsIdIncrement += 1;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public Timestamp getTimestamp() {
@@ -75,5 +92,18 @@ public class PostsModel {
 
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
+    }
+
+    public ArrayList<String> getUserIDsWhoLiked() {
+        return userIDsWhoLiked;
+    }
+
+    public void setUserIDsWhoLiked(ArrayList<String> userIDsWhoLiked) {
+        this.userIDsWhoLiked = userIDsWhoLiked;
+    }
+
+    @Override
+    public String getDocumentId() {
+        return postId;
     }
 }

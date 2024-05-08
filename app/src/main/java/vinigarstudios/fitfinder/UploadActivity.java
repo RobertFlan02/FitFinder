@@ -183,7 +183,7 @@ public class UploadActivity extends VinigarCompatActivity {
         PostsModel post = new PostsModel(imageUrl, uid, title, caption, 0);
 
         // Add post to Firestore collection
-        FirebaseHelper.UploadModelToDatabase(this, "posts", post);
+        FirebaseHelper.UploadModelToDatabase("posts", post, post.getDocumentId());
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
