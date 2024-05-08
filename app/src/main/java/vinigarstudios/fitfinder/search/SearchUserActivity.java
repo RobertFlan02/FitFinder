@@ -12,8 +12,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import org.checkerframework.framework.qual.Unused;
-
 import java.util.List;
 
 import vinigarstudios.fitfinder.R;

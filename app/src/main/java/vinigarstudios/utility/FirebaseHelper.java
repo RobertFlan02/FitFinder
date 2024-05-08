@@ -156,8 +156,9 @@ public final class FirebaseHelper {
      * @param collectionPath The CollectionPath.
      * @param model The IModel.
      * @param documentId The Id you want the IModel to be located at.
+     * @return DocumentReference that got uploaded.
      */
-    public static void UploadModelToDatabase(String collectionPath, IModel model, String documentId)
+    public static DocumentReference UploadModelToDatabase(String collectionPath, IModel model, String documentId)
     {
         try
         {
@@ -167,6 +168,7 @@ public final class FirebaseHelper {
         {
             Log.e("FirebaseHelper.UploadModelToDatabase Failed", "Failed Upload because " + e.getMessage());
         }
+        return FirebaseFirestore.getInstance().collection(collectionPath).document(documentId);
     }
 
     public static void ReplaceModelInDatabase(String collectionPath, IModel oldModel, IModel newModel)
