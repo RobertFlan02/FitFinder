@@ -131,8 +131,7 @@ public class FriendsActivity extends VinigarCompatActivity
         this.recyclerView = findViewById(R.id.searchUserRecyclerList);
         Query query = FirebaseHelper.GetAllProfilesCollectionReference()
                 .whereGreaterThanOrEqualTo("username",searchTerm)
-                .whereLessThanOrEqualTo("username",searchTerm+'\uf8ff')
-                .whereNotEqualTo("userId", FirebaseHelper.GetCurrentUserId());
+                .whereLessThanOrEqualTo("username",searchTerm+'\uf8ff');
 
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();

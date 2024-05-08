@@ -129,6 +129,22 @@ public class UserModel implements IModel
 
     public void setFollowerCount(int followerCount) { this.followerCount = followerCount; }
 
+    public ArrayList<UserModel> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(ArrayList<UserModel> friends) {
+        this.friends = friends;
+    }
+
+    public ArrayList<FriendRequest> getFriendRequests() {
+        return friendRequests;
+    }
+
+    public void setFriendRequests(ArrayList<FriendRequest> friendRequests) {
+        this.friendRequests = friendRequests;
+    }
+
     @Override
     public String getDocumentId() {
         return userId;
