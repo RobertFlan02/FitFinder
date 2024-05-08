@@ -1,10 +1,15 @@
 package vinigarstudios.fitfinder.models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.auth.User;
+
+import java.util.ArrayList;
+
+import vinigarstudios.utility.FirebaseHelper;
+import vinigarstudios.utility.FriendRequest;
 
 public class UserModel implements IModel
 {
-
     private String userId;
     private String phone;
     private String email;
@@ -13,6 +18,8 @@ public class UserModel implements IModel
     private String profileImageURL;
     private int followerCount;
 
+    private ArrayList<UserModel> friends;
+    private ArrayList<FriendRequest> friendRequests;
     public UserModel()
     {
         this.userId = "DEFAULT PLACEHOLDER";
@@ -22,6 +29,8 @@ public class UserModel implements IModel
         this.createdAt = Timestamp.now();
         this.profileImageURL = "DEFAULT PLACEHOLDER";
         this.followerCount = 0;
+        this.friends = new ArrayList<>();
+        this.friendRequests = new ArrayList<>();
     }
 
     public UserModel(String userId, String phone, String email, String username, Timestamp createdAt, String profileImageURL, int followerCount) {
@@ -32,6 +41,10 @@ public class UserModel implements IModel
         this.createdAt = createdAt;
         this.profileImageURL = profileImageURL;
         this.followerCount = followerCount;
+        this.friends = new ArrayList<>();
+        this.friendRequests = new ArrayList<>();
+    }
+
     }
 
     public String GetUserId() {
@@ -148,5 +161,27 @@ public class UserModel implements IModel
     @Override
     public String getDocumentId() {
         return userId;
+    }
+
+    public void SendFriendRequest(UserModel toUser)
+    {
+        for (FriendRequest friendRequest : friendRequests)
+        {
+            if (friendRequest.getFromUser() == this)
+            {
+                return;
+            }
+        }
+        toUser.getFriendRequests().add(new FriendRequest(this, toUser));
+    }
+    public void Decline(FriendRequest friendRequest)
+    {
+        this.getFriendRequests().remove(friendRequest);
+    }
+
+    public void Accept(FriendRequest friendRequest)
+    {
+        this.getFriendRequests().remove(friendRequest);
+        this.getFriends().add(friendRequest.getFromUser());
     }
 }
