@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.utility.NotificationHandler;
 
 public class Login extends AppCompatActivity {
     private TextInputEditText editTextEmail, editTextPassword;
@@ -60,7 +61,6 @@ public class Login extends AppCompatActivity {
                 finish();
             }
         });
-
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

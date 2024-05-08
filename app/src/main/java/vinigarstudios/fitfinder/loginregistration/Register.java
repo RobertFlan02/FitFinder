@@ -115,8 +115,6 @@ public class Register extends AppCompatActivity {
                                         String userEmail = user.getEmail();
                                     }
 
-                                    NotificationHandler.sendNotification(userModel.GetUserId(), "Welcome to FitFinder", "Your account has been successfully created");
-
                                     Toast.makeText(Register.this, "Account Made",
                                             Toast.LENGTH_SHORT).show();
                                     SetData();
