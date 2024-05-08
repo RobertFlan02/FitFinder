@@ -2,7 +2,7 @@ package vinigarstudios.fitfinder.models;
 
 import com.google.firebase.Timestamp;
 
-public class UserModel
+public class UserModel implements IModel
 {
 
     private String userId;
@@ -130,4 +130,15 @@ public class UserModel
     public void setFollowerCount(int followerCount) { this.followerCount = followerCount; }
 
 
+    @Override
+    public String getDocumentId()
+    {
+        return userId;
+    }
+
+    @Override
+    public void setDocumentId(String documentId)
+    {
+        userId = documentId;
+    }
 }

@@ -93,7 +93,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 @Override
                 public void onClick(View v) {
                     post.setLikes(post.getLikes() + 1);
-                    likesTextView.setText(String.valueOf(post.getLikes()));
                 }
             });
 

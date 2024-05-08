@@ -3,7 +3,7 @@ package vinigarstudios.fitfinder.models;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class PostsModel {
+public class PostsModel implements IModel {
     private String photoURL;
     private String profileUID;
     private String title;
@@ -11,6 +11,8 @@ public class PostsModel {
     private int likes;
     private Timestamp timestamp; // New field for timestamp
     private UserModel userModel; // New field for UserModel
+
+    private String id;
 
     public PostsModel() {
         // Empty constructor needed for Firestore
@@ -75,5 +77,14 @@ public class PostsModel {
 
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
+    }
+
+
+    public String getDocumentId() {
+        return id;
+    }
+
+    public void setDocumentId(String documentId) {
+        id = documentId;
     }
 }
