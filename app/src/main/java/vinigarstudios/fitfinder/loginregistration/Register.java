@@ -21,14 +21,18 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
@@ -57,6 +61,23 @@ public class Register extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private boolean containsCapital(String str) {
+        for (char c : str.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$");
+
+    // Validate email format
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
     }
 
     @Override
@@ -88,49 +109,85 @@ public class Register extends AppCompatActivity {
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
 
-                if (TextUtils.isEmpty(username)){
+                if (TextUtils.isEmpty(username)) {
                     Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
-                if (TextUtils.isEmpty(email)){
+                if (username.length() < 6 || !containsCapital(username)) {
+                    Toast.makeText(Register.this, "Must contain 6 characters, and a capital letter", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (TextUtils.isEmpty(email)) {
                     Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
+                if (!isValidEmail(email)) {
+                    Toast.makeText(Register.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                if (TextUtils.isEmpty(password) || password.length() < 6) {
+                    Toast.makeText(Register.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
+                // Check if email already exists in the database
+                FirebaseFirestore.getInstance().collection("profiles")
+                        .whereEqualTo("email", email)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    // User registered successfully, now create user profile
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    if (user != null) {
-                                        String userId = user.getUid();
-                                        String userEmail = user.getEmail();
-                                    }
+                                    if (!task.getResult().isEmpty()) {
+                                        // Email already exists in the database
+                                        Toast.makeText(Register.this, "Email already in use.", Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                    } else {
+                                        // Email is not in use, proceed with account creation
+                                        mAuth.createUserWithEmailAndPassword(email, password)
+                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        progressBar.setVisibility(View.GONE);
+                                                        if (task.isSuccessful()) {
+                                                            // User registered successfully, now create user profile
+                                                            FirebaseUser user = mAuth.getCurrentUser();
+                                                            if (user != null) {
+                                                                String userId = user.getUid();
+                                                                String userEmail = user.getEmail();
+                                                            }
 
-                                    Toast.makeText(Register.this, "Account Made",
-                                            Toast.LENGTH_SHORT).show();
-                                    SetData();
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
-                                    startActivity(intent);
-                                    finish();
+                                                            Toast.makeText(Register.this, "Account Made", Toast.LENGTH_SHORT).show();
+                                                            SetData();
+                                                            Intent intent = new Intent(getApplicationContext(), Login.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        } else {
+                                                            // If sign in fails, display a message to the user.
+                                                            Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                    }
                                 } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(Register.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    // Error occurred while checking email existence
+                                    Toast.makeText(Register.this, "Error checking email existence.", Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
                                 }
                             }
                         });
             }
         });
+
     }
     //endregionprofileName
 
