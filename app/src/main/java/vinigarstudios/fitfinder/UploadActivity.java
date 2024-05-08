@@ -5,12 +5,18 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -42,16 +48,28 @@ import java.util.Locale;
 
 public class UploadActivity extends VinigarCompatActivity {
 
-    private Button uploadButton;
+    String[] required_permissions = new String[] {
+            android.Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.CAMERA
+    };
+
+    private boolean is_storage_image_permitted = false;
+    private boolean is_camera_access_permitted = false;
+
+    String TAG = "Permission";
+
+    private Button cameraButton;
     private ImageView imageView;
-    private StorageReference storageRef;
     private Uri selectedImageUri;
+
+    private Button uploadButton;
+    private StorageReference storageRef;
     private EditText editTextTitle;
     private EditText editTextCaption;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 2;
-    private Button cameraButton;
+
 
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
@@ -63,18 +81,23 @@ public class UploadActivity extends VinigarCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
+        imageView = findViewById(R.id.imageView_placeholder);
+
+        storageRef = FirebaseStorage.getInstance().getReference();
+
         cameraButton = findViewById(R.id.cameraButton);
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+                if (is_camera_access_permitted) {
+                    openCamera();
+                } else {
+                    requestPermissionCameraAccess();
+                }
+
             }
         });
-
-        imageView = findViewById(R.id.imageView_placeholder);
-
-        storageRef = FirebaseStorage.getInstance().getReference();
 
         // Find the uploadButton by its ID
         uploadButton = findViewById(R.id.uploadButton);
@@ -128,38 +151,74 @@ public class UploadActivity extends VinigarCompatActivity {
         // Other initialization code...
     }
 
-    private void dispatchTakePictureIntent() {
-        // Check for camera permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Request the permission
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    CAMERA_PERMISSION_REQUEST_CODE);
+    public void openCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE,"Image");
+        values.put(MediaStore.Images.Media.DESCRIPTION,"Captured by User");
+        selectedImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
+        launcher_for_camera.launch(cameraIntent);
+    }
+
+    private ActivityResultLauncher<Intent> launcher_for_camera =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    new ActivityResultCallback<ActivityResult>() {
+                        @Override
+                        public void onActivityResult(ActivityResult o) {
+                            if (o.getResultCode()== RESULT_OK) {
+                                imageView.setImageURI(selectedImageUri);
+                            }
+
+                        }
+                    }
+            );
+
+    public void requestPermissionStorageImages() {
+        if (ContextCompat.checkSelfPermission(UploadActivity.this, required_permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, required_permissions[0] + "Granted");
+            is_storage_image_permitted = true;
+            requestPermissionCameraAccess();
         } else {
-            // Permission has already been granted
-            Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
+            request_permission_launcher_storage_images.launch(required_permissions[0]);
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, start the camera intent
-                dispatchTakePictureIntent();
-            } else {
-                // Permission denied
-                // Handle the denial gracefully
-                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
-            }
+    private ActivityResultLauncher<String> request_permission_launcher_storage_images =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                    isGranted -> {
+                        if (isGranted) {
+                            Log.d(TAG, required_permissions[0] + " Granted");
+                            is_storage_image_permitted = true;
+                        } else {
+                            Log.d(TAG, required_permissions[0] + " Not Granted");
+                            is_storage_image_permitted = false;
+                        }
+                        requestPermissionCameraAccess();
+                    });
+
+    public void requestPermissionCameraAccess() {
+        if (ContextCompat.checkSelfPermission(UploadActivity.this, required_permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, required_permissions[1] + "Granted");
+            is_camera_access_permitted = true;
+        } else {
+            request_permission_launcher_camera_access.launch(required_permissions[1]);
         }
     }
+
+    private ActivityResultLauncher<String> request_permission_launcher_camera_access =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                    isGranted -> {
+                        if (isGranted) {
+                            Log.d(TAG, required_permissions[1] + " Granted");
+                            is_camera_access_permitted = true;
+                        } else {
+                            Log.d(TAG, required_permissions[1] + " Not Granted");
+                            is_camera_access_permitted = false;
+                        }
+                        requestPermissionCameraAccess();
+                    });
 
 
     private void openImageChooser() {
