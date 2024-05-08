@@ -30,6 +30,15 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.ContentValues;
+import android.os.Environment;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Locale;
+
+
 
 public class UploadActivity extends VinigarCompatActivity {
 
@@ -159,25 +168,55 @@ public class UploadActivity extends VinigarCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_PICK && data != null) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
+                // Capture successful, get the captured image
+                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                // Save the image to a file
+                saveImageToGallery(imageBitmap);
+            } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
                 // Selected image from gallery
                 selectedImageUri = data.getData();
                 // Set the selected image to the ImageView
                 imageView.setImageURI(selectedImageUri);
-            } else if (requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
-                // Captured image from camera
-                // Here you can handle the captured image
-                // For example, you can display it in an ImageView
-                // imageView.setImageBitmap((Bitmap) data.getExtras().get("data"));
             }
         } else {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void saveImageToGallery(Bitmap imageBitmap) {
+        // Define the values for the new image file
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
+        // Insert the new image file into the MediaStore
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (uri == null) {
+            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Open an OutputStream to write the image data to the newly created file
+        try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
+            if (outputStream == null) {
+                throw new IOException("OutputStream is null");
+            }
+            // Compress and write the image bitmap to the OutputStream
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
 
     private void uploadImageAndPostData() {
