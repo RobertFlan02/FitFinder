@@ -10,6 +10,7 @@ public class PostsModel {
     private String caption;
     private int likes;
     private Timestamp timestamp; // New field for timestamp
+    private UserModel userModel; // New field for UserModel
 
     public PostsModel() {
         // Empty constructor needed for Firestore
@@ -68,5 +69,11 @@ public class PostsModel {
         this.likes = likes;
     }
 
+    public UserModel getUserModel() {
+        return userModel;
+    }
 
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
+    }
 }

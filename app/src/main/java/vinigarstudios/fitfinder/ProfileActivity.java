@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,11 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.io.IOException;
-
 import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.utility.VinigarCompatActivity;
+import com.google.firebase.storage.UploadTask;
 
 public class ProfileActivity extends VinigarCompatActivity {
 
@@ -38,7 +36,7 @@ public class ProfileActivity extends VinigarCompatActivity {
     private String currentUserUID;
     private Uri imageUri;
     private StorageReference storageRef;
-    private FirebaseFirestore database;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +70,7 @@ public class ProfileActivity extends VinigarCompatActivity {
 
         currentUserUID = mAuth.getCurrentUser().getUid();
         storageRef = FirebaseStorage.getInstance().getReference().child("profileImages");
-        database = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         loadUserData();
         loadProfileImage();
@@ -109,7 +107,7 @@ public class ProfileActivity extends VinigarCompatActivity {
 
     // This method loads the current user's name and follower count from Firestore and displays them in the appropriate fields
     private void loadUserData() {
-        database.collection("profiles").document(currentUserUID).get()
+        db.collection("profiles").document(currentUserUID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String username = documentSnapshot.getString("username");
@@ -139,6 +137,8 @@ public class ProfileActivity extends VinigarCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 profileImage.setImageBitmap(bitmap);
+                // Call the method to upload the selected image to Firebase Storage
+                uploadProfilePhoto();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -177,7 +177,7 @@ public class ProfileActivity extends VinigarCompatActivity {
 
     // Method to update the username in the Firebase database
     private void updateUsername(String newUsername) {
-        database.collection("profiles").document(currentUserUID)
+        db.collection("profiles").document(currentUserUID)
                 .update("username", newUsername)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -193,5 +193,53 @@ public class ProfileActivity extends VinigarCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Failed to update username", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    // Uploads the selected profile photo to Firebase
+    private void uploadProfilePhoto() {
+        StorageReference photoRef = storageRef.child(currentUserUID + ".jpg");
+        photoRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get the download URL of the uploaded image
+                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                // Update profileImageURL field in Firestore with the download URL
+                                updateProfileImageURL(uri.toString());
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileActivity.this, "Failed to upload photo", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    // Method to update the profileImageURL field in Firestore with the download URL
+    private void updateProfileImageURL(String imageURL) {
+        db.collection("profiles").document(currentUserUID)
+                .update("profileImageURL", imageURL)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // Show single notification for user details update
+                        showNotification("User details updated successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileActivity.this, "Failed to update profile image URL", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void showNotification(String message) {
+        Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 }
