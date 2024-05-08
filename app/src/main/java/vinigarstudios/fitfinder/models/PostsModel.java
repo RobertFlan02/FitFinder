@@ -4,6 +4,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+
 public class PostsModel implements IModel {
     private String photoURL;
     private String profileUID;
@@ -13,7 +15,7 @@ public class PostsModel implements IModel {
     private Timestamp timestamp; // New field for timestamp
     private UserModel userModel; // New field for UserModel
     private String postId;
-
+    private ArrayList<String> userIDsWhoLiked;
     private static int postsIdIncrement;
 
     public PostsModel() {
@@ -28,6 +30,7 @@ public class PostsModel implements IModel {
         this.likes = likes;
         this.timestamp = Timestamp.now();
         this.postId = Integer.toString(postsIdIncrement);
+        this.userIDsWhoLiked = new ArrayList<>();
         postsIdIncrement += 1;
     }
 
@@ -89,6 +92,14 @@ public class PostsModel implements IModel {
 
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
+    }
+
+    public ArrayList<String> getUserIDsWhoLiked() {
+        return userIDsWhoLiked;
+    }
+
+    public void setUserIDsWhoLiked(ArrayList<String> userIDsWhoLiked) {
+        this.userIDsWhoLiked = userIDsWhoLiked;
     }
 
     @Override

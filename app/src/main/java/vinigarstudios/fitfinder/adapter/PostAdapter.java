@@ -1,5 +1,6 @@
 package vinigarstudios.fitfinder.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
@@ -93,9 +96,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    post.setLikes(post.getLikes() + 1);
-                    PostsModel newPost = post;
-                    FirebaseHelper.ReplaceModelInDatabase("posts", post, newPost);
+                    if(!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
+                    {
+                        post.setLikes(post.getLikes() + 1);
+                        PostsModel newPost = post;
+                        likesTextView.setText(String.valueOf(post.getLikes()));
+                        post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
+                        FirebaseHelper.ReplaceModelInDatabase("posts", post, newPost);
+                        likeButton.setBackgroundColor(Color.rgb(1, 0, 1));
+                    }
+                    else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
+                    {
+                        post.setLikes(post.getLikes() - 1);
+                        PostsModel newPost = post;
+                        likesTextView.setText(String.valueOf(post.getLikes()));
+                        post.getUserIDsWhoLiked().remove(FirebaseHelper.GetCurrentUserId());
+                        FirebaseHelper.ReplaceModelInDatabase("posts", post, newPost);
+                        likeButton.setBackgroundColor(Color.rgb(0, 1, 0));
+                    }
                 }
             });
 
