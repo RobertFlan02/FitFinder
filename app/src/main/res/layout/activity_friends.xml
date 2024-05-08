@@ -7,6 +7,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".FriendsActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background3"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:id="@+id/profile_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_200"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <!-- Profile Title TextView -->
+        <TextView
+            android:id="@+id/textViewProfileTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Friends"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchUserRecyclerList"
         android:layout_width="match_parent"
