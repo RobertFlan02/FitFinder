@@ -269,6 +269,7 @@ public class ProfileActivity extends VinigarCompatActivity {
 
     private void fetchPostsFromFirestore() {
         db.collection("posts")
+                .whereEqualTo("profileUID", mAuth.getCurrentUser().getUid()) // Filter by the UID of the current user
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     postsList = new ArrayList<>();
@@ -279,7 +280,6 @@ public class ProfileActivity extends VinigarCompatActivity {
                     postAdapter.setPostsList(postsList);
                 })
                 .addOnFailureListener(e -> {
-                    // Handle error
                     Toast.makeText(ProfileActivity.this, "Failed to fetch posts", Toast.LENGTH_SHORT).show();
                 });
     }
