@@ -3,6 +3,9 @@ package vinigarstudios.fitfinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,10 +23,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import vinigarstudios.fitfinder.adapter.PostAdapter;
 import vinigarstudios.fitfinder.loginregistration.Login;
+import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.utility.VinigarCompatActivity;
 import com.google.firebase.storage.UploadTask;
 
@@ -38,10 +47,25 @@ public class ProfileActivity extends VinigarCompatActivity {
     private StorageReference storageRef;
     private FirebaseFirestore db;
 
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+    private List<PostsModel> postsList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // Initialize Firebase Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize RecyclerView
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Pass FirebaseFirestore instance to PostAdapter constructor
+        postAdapter = new PostAdapter(postsList, db);
+        recyclerView.setAdapter(postAdapter);
+        fetchPostsFromFirestore();
+
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
@@ -241,5 +265,22 @@ public class ProfileActivity extends VinigarCompatActivity {
 
     private void showNotification(String message) {
         Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void fetchPostsFromFirestore() {
+        db.collection("posts")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    postsList = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        PostsModel post = documentSnapshot.toObject(PostsModel.class);
+                        postsList.add(post);
+                    }
+                    postAdapter.setPostsList(postsList);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle error
+                    Toast.makeText(ProfileActivity.this, "Failed to fetch posts", Toast.LENGTH_SHORT).show();
+                });
     }
 }
