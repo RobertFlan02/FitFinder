@@ -2,7 +2,7 @@ package vinigarstudios.fitfinder.models;
 
 import com.google.firebase.Timestamp;
 
-public class UserModel
+public class UserModel implements IModel
 {
 
     private String userId;
@@ -10,6 +10,9 @@ public class UserModel
     private String email;
     private String username;
     private Timestamp createdAt;
+    private String profileImageURL;
+    private int followerCount;
+
     public UserModel()
     {
         this.userId = "DEFAULT PLACEHOLDER";
@@ -17,14 +20,18 @@ public class UserModel
         this.email = "DEFAULT PLACEHOLDER";
         this.username = "DEFAULT PLACEHOLDER";
         this.createdAt = Timestamp.now();
+        this.profileImageURL = "DEFAULT PLACEHOLDER";
+        this.followerCount = 0;
     }
 
-    public UserModel(String userId, String phone, String email, String username, Timestamp createdAt) {
+    public UserModel(String userId, String phone, String email, String username, Timestamp createdAt, String profileImageURL, int followerCount) {
         this.userId = userId;
         this.phone = phone;
         this.email = email;
         this.username = username;
         this.createdAt = createdAt;
+        this.profileImageURL = profileImageURL;
+        this.followerCount = followerCount;
     }
 
     public String GetUserId() {
@@ -46,6 +53,7 @@ public class UserModel
     public Timestamp GetCreatedAt() {
         return createdAt;
     }
+
 
 
     public void SetUserId(String userId) {
@@ -92,6 +100,10 @@ public class UserModel
         return createdAt;
     }
 
+    public String getProfileImageURL() { return profileImageURL; }
+
+    public int getFollowerCount() { return followerCount; }
+
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -113,5 +125,12 @@ public class UserModel
         this.createdAt = createdAt;
     }
 
+    public void setProfileImageURL(String profileImageURL) { this.profileImageURL = profileImageURL; }
 
+    public void setFollowerCount(int followerCount) { this.followerCount = followerCount; }
+
+    @Override
+    public String getDocumentId() {
+        return userId;
+    }
 }

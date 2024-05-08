@@ -170,7 +170,7 @@ public class Register extends AppCompatActivity {
         }
         else
         {
-            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now());
+            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now(), "PROFILE IMAGE URL", 0);
         }
 
         FirebaseHelper.GetCurrentUserDetails().set(userModel);

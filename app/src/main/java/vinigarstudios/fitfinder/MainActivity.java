@@ -2,27 +2,51 @@ package vinigarstudios.fitfinder;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import vinigarstudios.fitfinder.loginregistration.Login;
-import vinigarstudios.fitfinder.search.Search;
-import vinigarstudios.fitfinder.search.SearchUserActivity;
-import vinigarstudios.utility.VinigarCompatActivity;
+import java.util.ArrayList;
+import java.util.List;
+
+import vinigarstudios.fitfinder.adapter.PostAdapter;
+import vinigarstudios.fitfinder.models.PostsModel;
 
 public class MainActivity extends AppCompatActivity {
-    private Button logoutButton, searchButton;
+
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+    private List<PostsModel> postsList;
+    private FirebaseFirestore db;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize Firebase Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Initialize RecyclerView
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        // Pass FirebaseFirestore instance to PostAdapter constructor
+        postAdapter = new PostAdapter(postsList, db);
+        recyclerView.setAdapter(postAdapter);
+
+        // Fetch and display posts from Firestore
+        fetchPostsFromFirestore();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_home);
@@ -48,26 +72,26 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        logoutButton = findViewById(R.id.logoutButton);
-        searchButton = findViewById(R.id.searchButton);
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SearchUserActivity.class);
-                startActivity(intent);
-            }
-        });
     }
-}
+    private void fetchPostsFromFirestore() {
+        db.collection("posts")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    postsList = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        PostsModel post = documentSnapshot.toObject(PostsModel.class);
+                        postsList.add(post);
+                    }
+                    postAdapter.setPostsList(postsList);
+                })
+                .addOnFailureListener(e -> {
+                    // Handle error
+                    Toast.makeText(MainActivity.this, "Failed to fetch posts", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+    }
+
 

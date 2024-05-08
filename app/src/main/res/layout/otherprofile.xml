@@ -23,15 +23,13 @@
 
         <!-- Profile Title TextView -->
         <TextView
-            android:id="@+id/textViewProfileTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            android:text="FitFinder"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"
             android:layout_gravity="center"/>
-
     </LinearLayout>
 
     <!-- Container for elements below profile title -->
@@ -45,7 +43,7 @@
 
         <!-- Profile Image -->
         <ImageView
-            android:id="@+id/profile_image"
+            android:id="@+id/otherProfileImage"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
@@ -53,21 +51,21 @@
             android:layout_gravity="center_horizontal"/>
 
         <!-- EditText for Username -->
-        <EditText
-            android:id="@+id/editTextUsername"
+        <TextView
+            android:id="@+id/otherProfileUsernameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="110dp"
             android:layout_marginEnd="110dp"
-            android:hint="Enter username"
-            android:inputType="text"
+            android:text="Username"
+            android:textSize="20sp"
             android:textColorHint="@android:color/black"
             android:gravity="center_horizontal"
             />
 
         <!-- Follower Count TextView -->
         <TextView
-            android:id="@+id/textViewFollowerCount"
+            android:id="@+id/otherProfileFollowerCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Followers: 0"
@@ -81,25 +79,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textViewFollowerCount"
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
             <Button
-                android:id="@+id/submit_button"
+                android:id="@+id/otherProfileAddFriend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Confirm"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="10dp"/>
-
-            <Button
-                android:id="@+id/logoutButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Log Out"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:text="Add Friend" />
         </LinearLayout>
 
 
