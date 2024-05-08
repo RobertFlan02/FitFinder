@@ -129,16 +129,8 @@ public class UserModel implements IModel
 
     public void setFollowerCount(int followerCount) { this.followerCount = followerCount; }
 
-
     @Override
-    public String getDocumentId()
-    {
+    public String getDocumentId() {
         return userId;
-    }
-
-    @Override
-    public void setDocumentId(String documentId)
-    {
-        userId = documentId;
     }
 }

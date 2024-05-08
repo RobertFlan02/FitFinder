@@ -1,6 +1,7 @@
 package vinigarstudios.fitfinder.models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PostsModel implements IModel {
@@ -11,8 +12,9 @@ public class PostsModel implements IModel {
     private int likes;
     private Timestamp timestamp; // New field for timestamp
     private UserModel userModel; // New field for UserModel
+    private String postId;
 
-    private String id;
+    private static int postsIdIncrement;
 
     public PostsModel() {
         // Empty constructor needed for Firestore
@@ -25,6 +27,16 @@ public class PostsModel implements IModel {
         this.caption = caption;
         this.likes = likes;
         this.timestamp = Timestamp.now();
+        this.postId = Integer.toString(postsIdIncrement);
+        postsIdIncrement += 1;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public Timestamp getTimestamp() {
@@ -79,12 +91,8 @@ public class PostsModel implements IModel {
         this.userModel = userModel;
     }
 
-
+    @Override
     public String getDocumentId() {
-        return id;
-    }
-
-    public void setDocumentId(String documentId) {
-        id = documentId;
+        return postId;
     }
 }

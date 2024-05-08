@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -138,11 +139,11 @@ public final class FirebaseHelper {
      * @param collectionPath The collection path.
      * @param model The model.
      */
-    public static void UploadModelToDatabase(Context context, String collectionPath, IModel model)
+    public static void UploadModelToDatabase(String collectionPath, IModel model)
     {
         try
         {
-           model.setDocumentId(FirebaseFirestore.getInstance().collection(collectionPath).add(model).getResult().getId());
+            FirebaseFirestore.getInstance().collection(collectionPath).add(model);
         }
         catch(Exception e)
         {
@@ -150,7 +151,25 @@ public final class FirebaseHelper {
         }
     }
 
-    public static void ReplaceModelInDatabase(Context context, String collectionPath, IModel oldModel, IModel newModel)
+    /**
+     * Uploads Model to the database with a specific ID.
+     * @param collectionPath The CollectionPath.
+     * @param model The IModel.
+     * @param documentId The Id you want the IModel to be located at.
+     */
+    public static void UploadModelToDatabase(String collectionPath, IModel model, String documentId)
+    {
+        try
+        {
+            FirebaseFirestore.getInstance().collection(collectionPath).document(documentId).set(model);
+        }
+        catch(Exception e)
+        {
+            Log.e("FirebaseHelper.UploadModelToDatabase Failed", "Failed Upload because " + e.getMessage());
+        }
+    }
+
+    public static void ReplaceModelInDatabase(String collectionPath, IModel oldModel, IModel newModel)
     {
         try
         {

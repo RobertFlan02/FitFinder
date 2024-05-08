@@ -19,6 +19,7 @@ import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.utility.AndroidHelper;
+import vinigarstudios.utility.FirebaseHelper;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -93,6 +94,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 @Override
                 public void onClick(View v) {
                     post.setLikes(post.getLikes() + 1);
+                    PostsModel newPost = post;
+                    FirebaseHelper.ReplaceModelInDatabase("posts", post, newPost);
                 }
             });
 
