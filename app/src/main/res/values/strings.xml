@@ -16,4 +16,6 @@
     <string name="welcome_to_fitfinder">Welcome to FitFinder!</string>
     <string name="create_your_account">Create Your Account</string>
     <string name="logo">Logo</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="add_image">Add Image</string>
 </resources>
