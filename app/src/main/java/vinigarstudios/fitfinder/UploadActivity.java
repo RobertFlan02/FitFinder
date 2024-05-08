@@ -180,7 +180,7 @@ public class UploadActivity extends VinigarCompatActivity {
                     // Retrieve the bitmap from the intent data
                     imageBitmap = (Bitmap) data.getExtras().get("data");
                     // Save the image to the gallery
-                    saveImageToGallery();
+                    selectedImageUri = saveImageToGallery();
                     // Set the captured image to the ImageView
                     imageView.setImageBitmap(imageBitmap);
                 } else {
@@ -196,6 +196,7 @@ public class UploadActivity extends VinigarCompatActivity {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 
