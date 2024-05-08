@@ -24,6 +24,13 @@ import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+
 public class UploadActivity extends VinigarCompatActivity {
 
     private Button uploadButton;
@@ -33,6 +40,10 @@ public class UploadActivity extends VinigarCompatActivity {
     private EditText editTextTitle;
     private EditText editTextCaption;
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 2;
+    private Button cameraButton;
+
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
 
@@ -40,6 +51,15 @@ public class UploadActivity extends VinigarCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+
+        cameraButton = findViewById(R.id.cameraButton);
+
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
 
         imageView = findViewById(R.id.imageView_placeholder);
 
@@ -97,6 +117,40 @@ public class UploadActivity extends VinigarCompatActivity {
         // Other initialization code...
     }
 
+    private void dispatchTakePictureIntent() {
+        // Check for camera permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Request the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permission has already been granted
+            Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, start the camera intent
+                dispatchTakePictureIntent();
+            } else {
+                // Permission denied
+                // Handle the denial gracefully
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
     private void openImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -110,14 +164,21 @@ public class UploadActivity extends VinigarCompatActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_PICK && data != null) {
+                // Selected image from gallery
                 selectedImageUri = data.getData();
                 // Set the selected image to the ImageView
                 imageView.setImageURI(selectedImageUri);
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
+                // Captured image from camera
+                // Here you can handle the captured image
+                // For example, you can display it in an ImageView
+                // imageView.setImageBitmap((Bitmap) data.getExtras().get("data"));
             }
         } else {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void uploadImageAndPostData() {
         // Retrieve the text from title and caption fields
