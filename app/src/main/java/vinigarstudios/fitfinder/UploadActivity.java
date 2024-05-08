@@ -24,6 +24,22 @@ import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.content.ContentValues;
+import android.os.Environment;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Locale;
+
+
+
 public class UploadActivity extends VinigarCompatActivity {
 
     private Button uploadButton;
@@ -33,13 +49,28 @@ public class UploadActivity extends VinigarCompatActivity {
     private EditText editTextTitle;
     private EditText editTextCaption;
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 2;
+    private Button cameraButton;
+
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
+
+    private Bitmap imageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+
+        cameraButton = findViewById(R.id.cameraButton);
+
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+        });
 
         imageView = findViewById(R.id.imageView_placeholder);
 
@@ -97,6 +128,40 @@ public class UploadActivity extends VinigarCompatActivity {
         // Other initialization code...
     }
 
+    private void dispatchTakePictureIntent() {
+        // Check for camera permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Request the permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permission has already been granted
+            Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, start the camera intent
+                dispatchTakePictureIntent();
+            } else {
+                // Permission denied
+                // Handle the denial gracefully
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
     private void openImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -105,11 +170,24 @@ public class UploadActivity extends VinigarCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_PICK && data != null) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                // Capture successful, get the captured image
+                if (data != null && data.getExtras() != null && data.getExtras().containsKey("data")) {
+                    // Retrieve the bitmap from the intent data
+                    imageBitmap = (Bitmap) data.getExtras().get("data");
+                    // Save the image to the gallery
+                    selectedImageUri = saveImageToGallery();
+                    // Set the captured image to the ImageView
+                    imageView.setImageBitmap(imageBitmap);
+                } else {
+                    Toast.makeText(this, "Failed to capture image", Toast.LENGTH_SHORT).show();
+                }
+            } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
+                // Selected image from gallery
                 selectedImageUri = data.getData();
                 // Set the selected image to the ImageView
                 imageView.setImageURI(selectedImageUri);
@@ -118,6 +196,49 @@ public class UploadActivity extends VinigarCompatActivity {
             Toast.makeText(this, "Action cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+
+    private Uri saveImageToGallery() {
+        if (imageBitmap == null) {
+            Toast.makeText(this, "Image bitmap is null", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        // Define the values for the new image file
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
+        // Insert the new image file into the MediaStore
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (uri == null) {
+            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        // Open an OutputStream to write the image data to the newly created file
+        try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
+            if (outputStream == null) {
+                throw new IOException("OutputStream is null");
+            }
+            // Compress and write the image bitmap to the OutputStream
+            boolean success = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            if (!success) {
+                throw new IOException("Failed to compress bitmap");
+            }
+            outputStream.flush();
+            Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
+            return uri; // Return the URI of the saved image
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+
 
     private void uploadImageAndPostData() {
         // Retrieve the text from title and caption fields

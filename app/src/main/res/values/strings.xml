@@ -17,4 +17,6 @@
     <string name="create_your_account">Create Your Account</string>
     <string name="logo">Logo</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="add_image">Add Image</string>
 </resources>
