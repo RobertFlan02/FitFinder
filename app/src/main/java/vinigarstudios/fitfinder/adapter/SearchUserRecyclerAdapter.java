@@ -35,6 +35,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         holder.usernameTextView.setText(model.GetUsername());
         if(model.GetUserId().equals(FirebaseHelper.GetCurrentUserId())){
             holder.usernameTextView.setText(model.GetUsername()+ " (Me)");
+            return;
         }
 
         FirebaseHelper.GetOtherProfilePicStorageRef(model.GetUserId()).getDownloadUrl()
