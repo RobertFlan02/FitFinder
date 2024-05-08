@@ -56,6 +56,8 @@ public class UploadActivity extends VinigarCompatActivity {
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
 
+    private Bitmap imageBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,11 +174,18 @@ public class UploadActivity extends VinigarCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 // Capture successful, get the captured image
-                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-                // Save the image to a file
-                saveImageToGallery(imageBitmap);
+                if (data != null && data.getExtras() != null && data.getExtras().containsKey("data")) {
+                    // Retrieve the bitmap from the intent data
+                    imageBitmap = (Bitmap) data.getExtras().get("data");
+                    // Save the image to the gallery
+                    saveImageToGallery();
+                    // Set the captured image to the ImageView
+                    imageView.setImageBitmap(imageBitmap);
+                } else {
+                    Toast.makeText(this, "Failed to capture image", Toast.LENGTH_SHORT).show();
+                }
             } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
                 // Selected image from gallery
                 selectedImageUri = data.getData();
@@ -188,7 +197,14 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
-    private void saveImageToGallery(Bitmap imageBitmap) {
+
+
+    private Uri saveImageToGallery() {
+        if (imageBitmap == null) {
+            Toast.makeText(this, "Image bitmap is null", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
         // Define the values for the new image file
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_" + System.currentTimeMillis() + ".jpg");
@@ -198,7 +214,7 @@ public class UploadActivity extends VinigarCompatActivity {
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         if (uri == null) {
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         // Open an OutputStream to write the image data to the newly created file
@@ -207,15 +223,19 @@ public class UploadActivity extends VinigarCompatActivity {
                 throw new IOException("OutputStream is null");
             }
             // Compress and write the image bitmap to the OutputStream
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            boolean success = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            if (!success) {
+                throw new IOException("Failed to compress bitmap");
+            }
             outputStream.flush();
             Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
+            return uri; // Return the URI of the saved image
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return null;
         }
     }
-
 
 
 
