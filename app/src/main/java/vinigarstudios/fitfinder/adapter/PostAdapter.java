@@ -3,6 +3,7 @@ package vinigarstudios.fitfinder.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.firebase.Timestamp;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.utility.AndroidHelper;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -66,6 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private TextView timestampTextView;
         private ImageView profileImageView;
         private TextView usernameTextView;
+        private Button likeButton;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +79,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             timestampTextView = itemView.findViewById(R.id.timestampTextView);
             profileImageView = itemView.findViewById(R.id.profileImageView);
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
+            likeButton = itemView.findViewById(R.id.likeButton);
         }
 
         public void bind(PostsModel post) {
@@ -84,6 +88,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likesTextView.setText(String.valueOf(post.getLikes()));
             loadImage(post.getPhotoURL()); // Load image from URL
             displayTimestamp(post.getTimestamp()); // Display formatted timestamp
+
+            likeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    post.setLikes(post.getLikes() + 1);
+                    likesTextView.setText(String.valueOf(post.getLikes()));
+                }
+            });
 
             // Load profile image and username
             String profileUID = post.getProfileUID();

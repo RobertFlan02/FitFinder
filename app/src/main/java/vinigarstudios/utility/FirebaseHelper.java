@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vinigarstudios.fitfinder.UploadActivity;
+import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 
 /**
@@ -136,7 +137,7 @@ public final class FirebaseHelper {
      * @param collectionPath The collection path.
      * @param model The model.
      */
-    public static void UploadModelToDatabase(Context context, String collectionPath, Object model)
+    public static void UploadModelToDatabase(Context context, String collectionPath, PostsModel model)
     {
         try
         {
@@ -147,6 +148,21 @@ public final class FirebaseHelper {
             Log.e("Post Failed", "Failed post because " + e.getMessage());
             Toast.makeText(context, "Error creating Post", Toast.LENGTH_SHORT).show();
         }
-        FirebaseFirestore.getInstance().collection(collectionPath).add(model);
+        model.setId = FirebaseFirestore.getInstance().collection(collectionPath).add(model).getResult().getId();
+    }
+
+    public static void ReplaceModelInDatabase(Context context, String collectionPath, PostsModel oldModel, PostsModel newModel)
+    {
+        try
+        {
+            FirebaseHelper.GetCurrentUserDetails().get().getResult().toObject(UserModel.class);
+            FirebaseFirestore.getInstance().collection(collectionPath).add(newModel);
+            FirebaseFirestore.getInstance().collection(collectionPath).document();
+
+        }
+        catch(Exception e)
+        {
+            Log.e("FirebaseHelper.ReplaceModelInDatabase Failed", "Failed replace because " + e.getMessage());
+        }
     }
 }
