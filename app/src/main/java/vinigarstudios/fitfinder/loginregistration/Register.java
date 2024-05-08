@@ -42,7 +42,7 @@ import vinigarstudios.utility.FirebaseHelper;
 
 public class Register extends AppCompatActivity {
 
-    private TextInputEditText editTextUsername, editTextEmail, editTextPassword;
+    private TextInputEditText editTextUsername, editTextEmail, editTextPassword, editTextConfirmPassword;
     private Button buttonReg;
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
@@ -91,6 +91,7 @@ public class Register extends AppCompatActivity {
         buttonReg = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.btn_loginNow);
+        editTextConfirmPassword = findViewById(R.id.confirm_password);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,10 +105,11 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email, password;
+                String email, password, confirmPassword;
                 username = String.valueOf(editTextUsername.getText());
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
+                confirmPassword = String.valueOf(editTextConfirmPassword.getText());
 
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
@@ -116,7 +118,7 @@ public class Register extends AppCompatActivity {
                 }
 
                 if (username.length() < 6 || !containsCapital(username)) {
-                    Toast.makeText(Register.this, "Must contain 6 characters, and a capital letter", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "Username must be at least 6 characters long and contain a capital letter", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
@@ -128,13 +130,25 @@ public class Register extends AppCompatActivity {
                 }
 
                 if (!isValidEmail(email)) {
-                    Toast.makeText(Register.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "Invalid email address", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
 
-                if (TextUtils.isEmpty(password) || password.length() < 6) {
-                    Toast.makeText(Register.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (TextUtils.isEmpty(confirmPassword)) {
+                    Toast.makeText(Register.this, "Confirm your password", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!password.equals(confirmPassword)) {
+                    Toast.makeText(Register.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
@@ -187,6 +201,8 @@ public class Register extends AppCompatActivity {
                         });
             }
         });
+
+
 
     }
     //endregionprofileName
