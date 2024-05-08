@@ -20,18 +20,24 @@ public class AndroidHelper
 
     public static void PassUserModelAsIntent(Intent intent, UserModel model)
     {
-        intent.putExtra("username",model.GetUsername());
-        intent.putExtra("phone",model.GetPhone());
-        intent.putExtra("userId",model.GetUserId());
+        intent.putExtra("username", model.GetUsername());
+        intent.putExtra("phone", model.GetPhone());
+        intent.putExtra("userId", model.GetUserId());
+        intent.putExtra("followerCount", model.getFollowerCount());
+        intent.putExtra("profileImageURL", model.getProfileImageURL());
+        intent.putExtra("email", model.getEmail());
 
     }
 
     public static UserModel GetUserModelFromIntent(Intent intent)
     {
         UserModel userModel = new UserModel();
-        userModel.SetUsername(intent.getStringExtra("username"));
-        userModel.SetPhone(intent.getStringExtra("phone"));
-        userModel.SetUserId(intent.getStringExtra("userId"));
+        userModel.setUsername(intent.getStringExtra("username"));
+        userModel.setPhone(intent.getStringExtra("phone"));
+        userModel.setUserId(intent.getStringExtra("userId"));
+        userModel.setFollowerCount(intent.getIntExtra("followerCount", 0));
+        userModel.setProfileImageURL(intent.getStringExtra("profileImageURL"));
+
         return userModel;
     }
 
