@@ -5,46 +5,47 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity">
 
+    <!-- Background Image -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/background3"
         android:scaleType="centerCrop"/>
 
-    <!-- Profile Title -->
-    <LinearLayout
-        android:id="@+id/profile_title_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/purple_200"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- Profile Title TextView -->
-        <TextView
-            android:id="@+id/textViewProfileTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:layout_gravity="center"/>
-
-    </LinearLayout>
-
     <!-- Container for elements below profile title -->
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/profile_title_layout">
+        android:layout_above="@id/bottomNavigation">
 
         <LinearLayout
             android:id="@+id/elements_below_profile_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="15dp">
+            android:orientation="vertical">
+
+            <!-- Profile Title -->
+            <LinearLayout
+                android:id="@+id/profile_title_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/purple_200"
+                android:orientation="vertical"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
+
+                <!-- Profile Title TextView -->
+                <TextView
+                    android:id="@+id/textViewProfileTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
 
             <!-- Profile Image -->
             <ImageView
@@ -53,7 +54,8 @@
                 android:layout_height="150dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/greyicon"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:padding="16dp"/>
 
             <!-- EditText for Username -->
             <EditText
@@ -114,7 +116,8 @@
                 tools:listitem="@layout/post_item" />
 
         </LinearLayout>
-    </ScrollView>
+
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -122,10 +125,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
         android:background="@drawable/bottom_background"
         android:elevation="2dp"
         app:itemIconSize="30dp"
@@ -135,3 +134,4 @@
         app:menu="@menu/bottom_menu" />
 
 </RelativeLayout>
+
