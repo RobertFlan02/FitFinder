@@ -102,7 +102,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
-                        FirebaseHelper.ReplaceModelInDatabase("posts", post, newPost);
+                        FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
                         likeButton.setBackgroundColor(Color.rgb(1, 0, 1));
                     }
                     else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
@@ -111,7 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().remove(FirebaseHelper.GetCurrentUserId());
-                        FirebaseHelper.ReplaceModelInDatabase("posts", post, newPost);
+                        FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
                         likeButton.setBackgroundColor(Color.rgb(0, 1, 0));
                     }
                 }
