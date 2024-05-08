@@ -118,7 +118,7 @@ public class Register extends AppCompatActivity {
                 }
 
                 if (username.length() < 6 || !containsCapital(username)) {
-                    Toast.makeText(Register.this, "Username must be at least 6 characters long and contain a capital letter", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "Must be atleast 6 characters, and contain a capital letter", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
