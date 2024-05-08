@@ -1,29 +1,27 @@
 package vinigarstudios.utility;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.Filter;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import vinigarstudios.fitfinder.UploadActivity;
 import vinigarstudios.fitfinder.models.IModel;
-import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 
 /**
@@ -117,24 +115,6 @@ public final class FirebaseHelper {
     }
 
     /**
-     * Gets the UserModel of the current user -> UserModel holds the Users data.
-     *
-     * @return Current Users UserModel.
-     */
-    public static UserModel GetCurrentUserModel() {
-        return FirebaseHelper.GetCurrentUserDetails().get().getResult().toObject(UserModel.class);
-    }
-
-    /**
-     * Gets the UserModel of a user -> UserModel holds the Users data.
-     *
-     * @return Users(userId) UserModel.
-     */
-    public static UserModel GetOtherUserModel(String userId) {
-        return FirebaseHelper.GetOtherUserDetails(userId).get().getResult().toObject(UserModel.class);
-    }
-
-    /**
      * Uploads Model to the database.
      * @param collectionPath The collection path.
      * @param model The model.
@@ -171,7 +151,7 @@ public final class FirebaseHelper {
         return FirebaseFirestore.getInstance().collection(collectionPath).document(documentId);
     }
 
-    public static void ReplaceModelInDatabase(String collectionPath, IModel oldModel, IModel newModel)
+    public static void UpdateModelInDatabase(String collectionPath, IModel oldModel, IModel newModel)
     {
         try
         {
