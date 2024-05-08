@@ -11,7 +11,6 @@ import com.bumptech.glide.request.RequestOptions;
 
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
-import com.google.firebase.firestore.auth.User;
 
 public class AndroidHelper
 {
@@ -22,18 +21,31 @@ public class AndroidHelper
 
     public static void PassUserModelAsIntent(Intent intent, UserModel model)
     {
-        intent.putExtra("username",model.GetUsername());
-        intent.putExtra("phone",model.GetPhone());
-        intent.putExtra("userId",model.GetUserId());
+        intent.putExtra("username", model.GetUsername());
+        intent.putExtra("phone", model.GetPhone());
+        intent.putExtra("userId", model.GetUserId());
+        intent.putExtra("followerCount", model.getFollowerCount());
+        intent.putExtra("profileImageURL", model.getProfileImageURL());
+        intent.putExtra("email", model.getEmail());
+        intent.putExtra("friendRequestsDocIdList", model.getFriendRequestsDocIdList());
+        intent.putExtra("friendsId", model.getFriendsId());
+        intent.putExtra("createdAt", model.getCreatedAt());
 
     }
 
     public static UserModel GetUserModelFromIntent(Intent intent)
     {
         UserModel userModel = new UserModel();
-        userModel.SetUsername(intent.getStringExtra("username"));
-        userModel.SetPhone(intent.getStringExtra("phone"));
-        userModel.SetUserId(intent.getStringExtra("userId"));
+        userModel.setUsername(intent.getStringExtra("username"));
+        userModel.setPhone(intent.getStringExtra("phone"));
+        userModel.setEmail(intent.getStringExtra("email"));
+        userModel.setFriendRequestsDocIdList(intent.getStringArrayListExtra("friendRequestsDocIdList"));
+        userModel.setFriendsId(intent.getStringArrayListExtra("friendsId"));
+        userModel.setCreatedAt(intent.getParcelableExtra("createdAt"));
+        userModel.setUserId(intent.getStringExtra("userId"));
+        userModel.setFollowerCount(intent.getIntExtra("followerCount", 0));
+        userModel.setProfileImageURL(intent.getStringExtra("profileImageURL"));
+
         return userModel;
     }
 

@@ -41,6 +41,11 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Material3.Light" />
         <activity
+            android:name=".search.OtherProfileActivity"
+            android:exported="true"
+            android:parentActivityName=".FriendsActivity"
+            android:theme="@style/Theme.Material3.Light" />
+        <activity
             android:name=".search.SearchUserActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity"

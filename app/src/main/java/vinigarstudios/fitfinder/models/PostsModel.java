@@ -16,7 +16,7 @@ public class PostsModel implements IModel {
     private UserModel userModel; // New field for UserModel
     private String postId;
     private ArrayList<String> userIDsWhoLiked;
-    private static int postsIdIncrement;
+    private int postsIdIncrement;
 
     public PostsModel() {
         // Empty constructor needed for Firestore
@@ -29,9 +29,9 @@ public class PostsModel implements IModel {
         this.caption = caption;
         this.likes = likes;
         this.timestamp = Timestamp.now();
-        this.postId = Integer.toString(postsIdIncrement);
+        this.postId = profileUID + "_" + Integer.toString(postsIdIncrement);
         this.userIDsWhoLiked = new ArrayList<>();
-        postsIdIncrement += 1;
+        this.postsIdIncrement += 1;
     }
 
     public String getPostId() {
@@ -100,6 +100,10 @@ public class PostsModel implements IModel {
 
     public void setUserIDsWhoLiked(ArrayList<String> userIDsWhoLiked) {
         this.userIDsWhoLiked = userIDsWhoLiked;
+    }
+
+    public int getPostsIdIncrement() {
+        return postsIdIncrement;
     }
 
     @Override

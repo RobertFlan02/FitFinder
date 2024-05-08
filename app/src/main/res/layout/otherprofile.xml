@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity">
+    tools:context=".search.OtherProfileActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -23,13 +23,14 @@
 
         <!-- Profile Title TextView -->
         <TextView
+            android:id="@+id/otherProfileUsernameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FitFinder"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:text="Username"
             android:textColor="@android:color/black"
-            android:layout_gravity="center"/>
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Container for elements below profile title -->
@@ -51,17 +52,6 @@
             android:layout_gravity="center_horizontal"/>
 
         <!-- EditText for Username -->
-        <TextView
-            android:id="@+id/otherProfileUsernameText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="110dp"
-            android:layout_marginEnd="110dp"
-            android:text="Username"
-            android:textSize="20sp"
-            android:textColorHint="@android:color/black"
-            android:gravity="center_horizontal"
-            />
 
         <!-- Follower Count TextView -->
         <TextView
@@ -83,7 +73,7 @@
             android:gravity="center_horizontal">
 
             <Button
-                android:id="@+id/otherProfileAddFriend"
+                android:id="@+id/otherProfileAddFriendButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

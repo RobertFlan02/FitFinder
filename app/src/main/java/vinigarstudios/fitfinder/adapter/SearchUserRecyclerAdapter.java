@@ -17,6 +17,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.UserModel;
+import vinigarstudios.fitfinder.search.OtherProfileActivity;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.AndroidHelper;
 
@@ -34,6 +35,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         holder.usernameTextView.setText(model.GetUsername());
         if(model.GetUserId().equals(FirebaseHelper.GetCurrentUserId())){
             holder.usernameTextView.setText(model.GetUsername()+ " (Me)");
+            return;
         }
 
         FirebaseHelper.GetOtherProfilePicStorageRef(model.GetUserId()).getDownloadUrl()
@@ -44,13 +46,13 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                     }
                 });
 
-//        holder.itemView.setOnClickListener(v -> {
-//            //navigate to chat activity
-////            Intent intent = new Intent(context, ChatActivity.class);
-////            AndroidHelper.PassUserModelAsIntent(intent,model);
-////            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////            context.startActivity(intent);
-//        });
+        holder.itemView.setOnClickListener(v -> {
+            //navigate to other profile page
+            Intent intent = new Intent(context, OtherProfileActivity.class);
+            AndroidHelper.PassUserModelAsIntent(intent, model);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
     }
 
     @NonNull
@@ -60,7 +62,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         return new UserModelViewHolder(view);
     }
 
-    protected static class UserModelViewHolder extends RecyclerView.ViewHolder
+    class UserModelViewHolder extends RecyclerView.ViewHolder
     {
         TextView usernameTextView;
         ImageView profilePic;
