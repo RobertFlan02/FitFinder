@@ -270,6 +270,22 @@ public class UserModel implements IModel
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
+    public void RemoveUser(UserModel otherUser)
+    {
+        for(String string : getFriendsId())
+        {
+            if (string.equals(otherUser.getUserId()))
+            {
+                this.getFriendsId().remove(string);
+                this.setFollowerCount(this.getFriendsId().size());
+                otherUser.getFriendsId().remove(this.getUserId());
+                otherUser.setFollowerCount(otherUser.getFriendsId().size());
+                FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+                FirebaseHelper.UpdateModelInDatabase("profiles", otherUser, otherUser);
+            }
+        }
+    }
+
     private void RemoveUserAndDeleteFriendRequest(String string)
     {
         getFriendRequestsDocIdList().remove(string);

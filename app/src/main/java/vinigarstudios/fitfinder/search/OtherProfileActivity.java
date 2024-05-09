@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import vinigarstudios.fitfinder.FriendsActivity;
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
@@ -34,6 +35,8 @@ public class OtherProfileActivity extends VinigarCompatActivity
     private ImageView profileImage;
     private TextView followerCount;
     private Button addFriendButton;
+
+    private Button removeFriendButton;
     private Button acceptFriendReqButton;
     private Button declineFriendReqButton;
     private BottomNavigationView bottomNavigationView;
@@ -55,11 +58,12 @@ public class OtherProfileActivity extends VinigarCompatActivity
         profileImage = findViewById(R.id.otherProfileImage);
         followerCount = findViewById(R.id.otherProfileFollowerCount);
         addFriendButton = findViewById(R.id.otherProfileAddFriendButton);
+        removeFriendButton = findViewById(R.id.otherProfileRemoveFriendButton);
         acceptFriendReqButton = findViewById(R.id.otherProfileAcceptFriendButton);
         declineFriendReqButton = findViewById(R.id.otherProfileDeclineFriendButton);
 
         username.setText(otherUser.getUsername());
-        followerCount.setText("Followers: " + otherUser.getFollowerCount());
+        followerCount.setText("Friends: " + otherUser.getFollowerCount());
 
         this.ButtonsFunctionality();
 
@@ -96,18 +100,21 @@ public class OtherProfileActivity extends VinigarCompatActivity
             addFriendButton.setVisibility(View.INVISIBLE);
             declineFriendReqButton.setVisibility(View.INVISIBLE);
             acceptFriendReqButton.setVisibility(View.INVISIBLE);
+            removeFriendButton.setVisibility(View.VISIBLE);
         }
         else if (currentUser.getFriendRequestsDocIdList().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user has friendreq from this person
         {
             addFriendButton.setVisibility(View.INVISIBLE);
             declineFriendReqButton.setVisibility(View.VISIBLE);
             acceptFriendReqButton.setVisibility(View.VISIBLE);
+            removeFriendButton.setVisibility(View.INVISIBLE);
         }
         else
         {
             addFriendButton.setVisibility(View.VISIBLE);
             declineFriendReqButton.setVisibility(View.INVISIBLE);
             acceptFriendReqButton.setVisibility(View.INVISIBLE);
+            removeFriendButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -128,7 +135,22 @@ public class OtherProfileActivity extends VinigarCompatActivity
                 }
             }
         });
-
+        this.removeFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try
+                {
+                    currentUser.RemoveUser(otherUser);
+                    Toast.makeText(getApplicationContext(), "User '" + otherUser.getUsername() + "' is no longer your friend!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
+                    finish();
+                }
+                catch(Exception e)
+                {
+                    Toast.makeText(getApplicationContext(), "Error deleting friend", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         this.acceptFriendReqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +158,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
                 {
                     currentUser.AcceptUser(otherUser);
                     Toast.makeText(getApplicationContext(), "User '" + otherUser.getUsername() + "' is now your friend!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
                     finish();
                 }
                 catch(Exception e)
@@ -154,7 +176,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
                 {
                     currentUser.DeclineUser(otherUser);
                     Toast.makeText(getApplicationContext(), "User '" + otherUser.getUsername() + "''s friend request is declined!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
                     finish();
                 }
                 catch(Exception e)
