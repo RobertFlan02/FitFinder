@@ -46,7 +46,6 @@ public class PostsModel implements IModel {
                 userModel.AddToPostsList(PostsModel.this);
                 //On complete happens after model is instantiated so we need to replace teh model
                 FirebaseHelper.ReplaceModelInDatabase("posts", profileUID + "_" + "TEMP", PostsModel.this);
-                FirebaseHelper.UpdateModelInDatabase("profiles", userModel, userModel);
             }
         });
     }

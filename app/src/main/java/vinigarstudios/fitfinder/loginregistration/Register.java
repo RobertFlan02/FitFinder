@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.FirebaseHelper;
 
@@ -50,6 +51,9 @@ public class Register extends AppCompatActivity {
     private UserModel userModel;
     private static final String TAG = "Register";
     private String username;
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$");
 
     //region Override Methods
     @Override
@@ -72,8 +76,11 @@ public class Register extends AppCompatActivity {
         return false;
     }
 
-    private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$");
+    // Validate email format
+    private boolean isValidEmailLength(String email) {
+        String[] emailSplit = email.split("@");
+        return emailSplit.length == 2 && emailSplit[0].length() >= 5;
+    }
 
     // Validate email format
     private boolean isValidEmail(String email) {
@@ -118,7 +125,7 @@ public class Register extends AppCompatActivity {
                 }
 
                 if (username.length() < 6 || !containsCapital(username)) {
-                    Toast.makeText(Register.this, "Must be atleast 6 characters, and contain a capital letter", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "Username must be at least 6 characters and contain a capital letter", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
@@ -135,8 +142,20 @@ public class Register extends AppCompatActivity {
                     return;
                 }
 
+                if (!isValidEmailLength(email)) {
+                    Toast.makeText(Register.this, "Email must have at least 6 characters before the '@' sign", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
                 if (TextUtils.isEmpty(password)) {
                     Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (password.length() < 6) {
+                    Toast.makeText(Register.this, "Password must be at least 6 characters long", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
@@ -149,6 +168,12 @@ public class Register extends AppCompatActivity {
 
                 if (!password.equals(confirmPassword)) {
                     Toast.makeText(Register.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!containsCapital(password)) {
+                    Toast.makeText(Register.this, "Password must contain at least one capital letter", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
@@ -202,10 +227,7 @@ public class Register extends AppCompatActivity {
             }
         });
 
-
-
     }
-    //endregionprofileName
 
     //region Private Methods
 

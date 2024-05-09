@@ -1,5 +1,6 @@
 package vinigarstudios.fitfinder.models;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -187,6 +188,7 @@ public class UserModel implements IModel
         if (!postsListIds.contains(postId))
         {
             postsListIds.add(postId);;
+            FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
         }
     }
 
@@ -195,6 +197,7 @@ public class UserModel implements IModel
         if (!postsListIds.contains(postsModel.getPostId()))
         {
             postsListIds.add(postsModel.getPostId());;
+            FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
         }
     }
 
@@ -203,14 +206,88 @@ public class UserModel implements IModel
         return userId;
     }
 
-    public void Decline(FriendRequestModel friendRequest)
+    public void DeclineUser(UserModel otherUser)
     {
-//        this.getFriendRequests().remove(friendRequest);
+        for(String string : getFriendRequestsDocIdList())
+        {
+            if (string.startsWith(otherUser.getUserId()))
+            {
+                this.RemoveUserAndDeleteFriendRequest(string);
+            }
+        }
+        FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
-    public void Accept(FriendRequestModel friendRequest)
+    public void DeclineUser(String otherUserId)
     {
-//        this.getFriendRequests().remove(friendRequest);
-//        this.getFriendsId().add(FirebaseHelper.GetOtherUserModel(friendRequest.getFromUserId()));
+        for(String string : getFriendRequestsDocIdList())
+        {
+            if (string.startsWith(otherUserId))
+            {
+                this.RemoveUserAndDeleteFriendRequest(string);
+            }
+        }
+        FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+    }
+
+    public void DeclineFriendReq(String friendRequestId)
+    {
+        this.RemoveUserAndDeleteFriendRequest(friendRequestId);
+        FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+    }
+
+    public void AcceptUser(UserModel otherUser)
+    {
+        for(String string : getFriendRequestsDocIdList())
+        {
+            if (string.startsWith(otherUser.getUserId()))
+            {
+                this.RemoveUserAndDeleteFriendRequest(string);
+
+                this.getFriendsId().add(otherUser.getUserId());
+                this.setFollowerCount(this.getFriendsId().size());
+                otherUser.getFriendsId().add(this.getUserId());
+                otherUser.setFollowerCount(otherUser.getFollowerCount() + 1);
+                FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+                FirebaseHelper.UpdateModelInDatabase("profiles", otherUser, otherUser);
+                return;
+            }
+        }
+    }
+
+    @Deprecated
+    public void AcceptUser(String otherUserId)
+    {
+        for(String string : getFriendRequestsDocIdList())
+        {
+            if (string.startsWith(otherUserId))
+            {
+                this.RemoveUserAndDeleteFriendRequest(string);
+                //this.AddFriendToListAndUpdateFollowerCount(otherUserId);
+            }
+        }
+        FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+    }
+
+    public void RemoveUser(UserModel otherUser)
+    {
+        for(String string : getFriendsId())
+        {
+            if (string.equals(otherUser.getUserId()))
+            {
+                this.getFriendsId().remove(string);
+                this.setFollowerCount(this.getFriendsId().size());
+                otherUser.getFriendsId().remove(this.getUserId());
+                otherUser.setFollowerCount(otherUser.getFriendsId().size());
+                FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+                FirebaseHelper.UpdateModelInDatabase("profiles", otherUser, otherUser);
+            }
+        }
+    }
+
+    private void RemoveUserAndDeleteFriendRequest(String string)
+    {
+        getFriendRequestsDocIdList().remove(string);
+        FirebaseHelper.RemoveModelInDatabase("friendRequests", string);
     }
 }

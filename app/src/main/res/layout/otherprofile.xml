@@ -58,7 +58,7 @@
             android:id="@+id/otherProfileFollowerCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Followers: 0"
+            android:text="Friends: 0"
             android:textSize="18sp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
@@ -79,6 +79,44 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:text="Add Friend" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/otherProfileRemoveFriendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Remove Friend" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/otherProfileAcceptFriendButton"
+                android:layout_width="148dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Accept Friend Request" />
+
+            <Button
+                android:id="@+id/otherProfileDeclineFriendButton"
+                android:layout_width="143dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Decline Friend Request" />
         </LinearLayout>
 
 
