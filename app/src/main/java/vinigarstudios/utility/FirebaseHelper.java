@@ -5,16 +5,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -22,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vinigarstudios.fitfinder.models.IModel;
-import vinigarstudios.fitfinder.models.UserModel;
 
 /**
  * Helpers class for FireStore. Contains useful methods usually to get data from the database.
@@ -156,6 +152,19 @@ public final class FirebaseHelper {
         try
         {
             FirebaseFirestore.getInstance().collection(collectionPath).document(oldModel.getDocumentId()).set(newModel);
+        }
+        catch(Exception e)
+        {
+            Log.e("FirebaseHelper.UpdateModelInDatabase Failed", "Failed replace because " + e.getMessage());
+        }
+    }
+
+    public static void ReplaceModelInDatabase(String collectionPath, String oldModelId, IModel newModel)
+    {
+        try
+        {
+            FirebaseFirestore.getInstance().collection(collectionPath).document(oldModelId).delete();
+            FirebaseFirestore.getInstance().collection(collectionPath).document(newModel.getDocumentId()).set(newModel);
         }
         catch(Exception e)
         {

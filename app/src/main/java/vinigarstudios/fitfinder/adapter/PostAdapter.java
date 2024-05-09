@@ -8,10 +8,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
@@ -21,7 +19,6 @@ import java.util.Locale;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.R;
-import vinigarstudios.utility.AndroidHelper;
 import vinigarstudios.utility.FirebaseHelper;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
