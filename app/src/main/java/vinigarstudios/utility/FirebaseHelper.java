@@ -147,6 +147,12 @@ public final class FirebaseHelper {
         return FirebaseFirestore.getInstance().collection(collectionPath).document(documentId);
     }
 
+    /**
+     * Update model in Database.
+     * @param collectionPath The collectionPath.
+     * @param oldModel The model to be updated.
+     * @param newModel oldModel updates into newModel.
+     */
     public static void UpdateModelInDatabase(String collectionPath, IModel oldModel, IModel newModel)
     {
         try
@@ -159,6 +165,12 @@ public final class FirebaseHelper {
         }
     }
 
+    /**
+     * Replaces a model in database.
+     * @param collectionPath The collection path.
+     * @param oldModelId The old models id.
+     * @param newModel The model replacing it.
+     */
     public static void ReplaceModelInDatabase(String collectionPath, String oldModelId, IModel newModel)
     {
         try

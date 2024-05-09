@@ -33,7 +33,7 @@ public class PostsModel implements IModel {
         this.profileUID = profileUID;
         this.title = title;
         this.caption = caption;
-        this.postId = profileUID + "_" + "TEMP";
+        this.postId = profileUID + "_" + "TEMP"; //Temp so we create a model.
         this.likes = likes;
         this.timestamp = Timestamp.now();
         this.userIDsWhoLiked = new ArrayList<>();
@@ -44,6 +44,7 @@ public class PostsModel implements IModel {
                 userModel = task.getResult().toObject(UserModel.class);
                 postId = profileUID + "_" + Integer.toString(getUserModel().getPostsListIds().size());
                 userModel.AddToPostsList(PostsModel.this);
+                //On complete happens after model is instantiated so we need to replace teh model
                 FirebaseHelper.ReplaceModelInDatabase("posts", profileUID + "_" + "TEMP", PostsModel.this);
                 FirebaseHelper.UpdateModelInDatabase("profiles", userModel, userModel);
             }
