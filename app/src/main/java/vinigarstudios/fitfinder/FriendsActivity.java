@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -28,9 +29,10 @@ public class FriendsActivity extends VinigarCompatActivity
 {
     private RecyclerView recyclerView;
     private SearchUserRecyclerAdapter recyclerAdapter;
-
     private TextView friendsText;
+    private TextView textViewProfileTitle;
 
+    private LinearLayout topBar;
     private BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class FriendsActivity extends VinigarCompatActivity
         this.recyclerView = findViewById(R.id.searchUserRecyclerList);
         this.friendsText = findViewById(R.id.friendsActivityText);
         this.bottomNavigationView = findViewById(R.id.bottomNavigation);
+        this.textViewProfileTitle = findViewById(R.id.textViewProfileTitle);
+        this.topBar = findViewById(R.id.profile_title_layout);
 
         bottomNavigationView.setSelectedItemId(R.id.bottom_friends);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -150,5 +154,7 @@ public class FriendsActivity extends VinigarCompatActivity
     {
         friendsText.setVisibility(visibility);
         bottomNavigationView.setVisibility(visibility);
+        textViewProfileTitle.setVisibility(visibility);
+        topBar.setVisibility(visibility);
     }
 }
