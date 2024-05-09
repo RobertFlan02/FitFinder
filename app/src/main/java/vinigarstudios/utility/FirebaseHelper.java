@@ -5,10 +5,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -18,7 +20,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import vinigarstudios.fitfinder.models.FriendRequestModel;
 import vinigarstudios.fitfinder.models.IModel;
+import vinigarstudios.fitfinder.models.PostsModel;
+import vinigarstudios.fitfinder.models.UserModel;
 
 /**
  * Helpers class for FireStore. Contains useful methods usually to get data from the database.
@@ -51,6 +56,53 @@ public final class FirebaseHelper {
     public static DocumentReference GetOtherUserDetails(String userId) {
         return FirebaseFirestore.getInstance().collection("profiles").document(userId);
     }
+
+//    /**
+//     * Gets the ModelTask. Used in any GetModel method.
+//     * @param collection The collection
+//     * @param id The Id
+//     * @return The model task.
+//     */
+//    private static Task<DocumentSnapshot> GetModelTask(String collection, String id)
+//    {
+//        return FirebaseFirestore.getInstance().collection(collection).document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//
+//            }
+//        });
+//    }
+//
+//    /**
+//     * Get the userModel of Id.
+//     * @param id The id of the userModel.
+//     * @return userModel of Id.
+//     */
+//    public static UserModel GetUserModelFromId(String id)
+//    {
+//        return GetModelTask("profiles", id).getResult().toObject(UserModel.class);
+//    }
+//
+//    /**
+//     * Get the postModel of Id.
+//     * @param id The id of the postModel.
+//     * @return postModel of Id.
+//     */
+//    public static PostsModel GetPostsModelFromId(String id)
+//    {
+//        return GetModelTask("posts", id).getResult().toObject(PostsModel.class);
+//    }
+//
+//    /**
+//     * Get the friendModel of Id.
+//     * @param id The id of the friendModel.
+//     * @return friendModel of Id.
+//     */
+//    public static FriendRequestModel GetFriendReqModelFromId(String id)
+//    {
+//        return GetModelTask("posts", id).getResult().toObject(FriendRequestModel.class);
+//    }
+
 
     /**
      * Get path to the profileImage of current User.
@@ -177,6 +229,40 @@ public final class FirebaseHelper {
         {
             FirebaseFirestore.getInstance().collection(collectionPath).document(oldModelId).delete();
             FirebaseFirestore.getInstance().collection(collectionPath).document(newModel.getDocumentId()).set(newModel);
+        }
+        catch(Exception e)
+        {
+            Log.e("FirebaseHelper.ReplaceModelInDatabase Failed", "Failed replace because " + e.getMessage());
+        }
+    }
+
+    /**
+     * Removes a model in database.
+     * @param collectionPath The collection path.
+     * @param model The model.
+     */
+    public static void RemoveModelInDatabase(String collectionPath, IModel model)
+    {
+        try
+        {
+            FirebaseFirestore.getInstance().collection(collectionPath).document(model.getDocumentId()).delete();
+        }
+        catch(Exception e)
+        {
+            Log.e("FirebaseHelper.ReplaceModelInDatabase Failed", "Failed replace because " + e.getMessage());
+        }
+    }
+
+    /**
+     * Removes a model in database.
+     * @param collectionPath The collection path.
+     * @param modelId The models id.
+     */
+    public static void RemoveModelInDatabase(String collectionPath, String modelId)
+    {
+        try
+        {
+            FirebaseFirestore.getInstance().collection(collectionPath).document(modelId).delete();
         }
         catch(Exception e)
         {

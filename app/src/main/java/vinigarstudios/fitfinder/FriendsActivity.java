@@ -31,7 +31,6 @@ public class FriendsActivity extends VinigarCompatActivity
     private SearchUserRecyclerAdapter recyclerAdapter;
     private TextView friendsText;
     private TextView textViewProfileTitle;
-
     private LinearLayout topBar;
     private BottomNavigationView bottomNavigationView;
     @Override

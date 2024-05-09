@@ -1,7 +1,6 @@
 package vinigarstudios.fitfinder.search;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.ProfileActivity;
@@ -24,11 +28,14 @@ import vinigarstudios.utility.VinigarCompatActivity;
 
 public class OtherProfileActivity extends VinigarCompatActivity
 {
+    private UserModel currentUser;
     private UserModel otherUser;
     private TextView username;
     private ImageView profileImage;
     private TextView followerCount;
     private Button addFriendButton;
+    private Button acceptFriendReqButton;
+    private Button declineFriendReqButton;
     private BottomNavigationView bottomNavigationView;
     @SuppressLint("SetTextI18n")
     @Override
@@ -36,30 +43,25 @@ public class OtherProfileActivity extends VinigarCompatActivity
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.otherprofile);
 
+        FirebaseHelper.GetCurrentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                currentUser = task.getResult().toObject(UserModel.class);
+                HandleButtonVisibility();
+            }
+        });
         otherUser = AndroidHelper.GetUserModelFromIntent(getIntent());
         username = findViewById(R.id.otherProfileUsernameText);
         profileImage = findViewById(R.id.otherProfileImage);
         followerCount = findViewById(R.id.otherProfileFollowerCount);
         addFriendButton = findViewById(R.id.otherProfileAddFriendButton);
+        acceptFriendReqButton = findViewById(R.id.otherProfileAcceptFriendButton);
+        declineFriendReqButton = findViewById(R.id.otherProfileDeclineFriendButton);
 
         username.setText(otherUser.getUsername());
         followerCount.setText("Followers: " + otherUser.getFollowerCount());
 
-        this.addFriendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (FriendRequestHandler.SendFriendRequest(FirebaseHelper.GetCurrentUserId(), otherUser))
-                {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    finish();
-                }
-                else
-                {
-                    //Friend request already sent
-                    Toast.makeText(getApplicationContext(), "Friend Request Already Sent", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        this.ButtonsFunctionality();
 
         this.bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -86,5 +88,82 @@ public class OtherProfileActivity extends VinigarCompatActivity
             }
             return false;
         });
+    }
+
+    private void HandleButtonVisibility() {
+        if (currentUser.getFriendsId().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user is friends with this person
+        {
+            addFriendButton.setVisibility(View.INVISIBLE);
+            declineFriendReqButton.setVisibility(View.INVISIBLE);
+            acceptFriendReqButton.setVisibility(View.INVISIBLE);
+        }
+        else if (currentUser.getFriendRequestsDocIdList().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user has friendreq from this person
+        {
+            addFriendButton.setVisibility(View.INVISIBLE);
+            declineFriendReqButton.setVisibility(View.VISIBLE);
+            acceptFriendReqButton.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            addFriendButton.setVisibility(View.VISIBLE);
+            declineFriendReqButton.setVisibility(View.INVISIBLE);
+            acceptFriendReqButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void ButtonsFunctionality()
+    {
+        this.addFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FriendRequestHandler.SendFriendRequest(FirebaseHelper.GetCurrentUserId(), otherUser))
+                {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                }
+                else
+                {
+                    //Friend request already sent
+                    Toast.makeText(getApplicationContext(), "Friend Request Already Sent", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        this.acceptFriendReqButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try
+                {
+                    currentUser.AcceptUser(otherUser);
+                    Toast.makeText(getApplicationContext(), "User '" + otherUser.getUsername() + "' is now your friend!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                }
+                catch(Exception e)
+                {
+                    //Friend request already sent
+                    Toast.makeText(getApplicationContext(), "Error accepting friend Request", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        this.declineFriendReqButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try
+                {
+                    currentUser.DeclineUser(otherUser);
+                    Toast.makeText(getApplicationContext(), "User '" + otherUser.getUsername() + "''s friend request is declined!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    finish();
+                }
+                catch(Exception e)
+                {
+                    //Friend request already sent
+                    Toast.makeText(getApplicationContext(), "Error declining friend Request", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 }
