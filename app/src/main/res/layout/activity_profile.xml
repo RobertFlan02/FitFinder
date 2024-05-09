@@ -54,7 +54,7 @@
                 android:id="@+id/profile_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:src="@drawable/greyicon"
                 android:layout_gravity="center_horizontal"
                 android:padding="16dp"/>
