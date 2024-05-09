@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,6 +47,9 @@ public class OtherProfileActivity extends VinigarCompatActivity
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.otherprofile);
 
+
+
+
         FirebaseHelper.GetCurrentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -68,6 +72,12 @@ public class OtherProfileActivity extends VinigarCompatActivity
         this.ButtonsFunctionality();
 
         this.bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        Glide.with(this)
+                .load(otherUser.getProfileImageURL())
+                .placeholder(R.drawable.greyicon) // Placeholder image while loading
+                .error(R.drawable.greyicon) // Error image if loading fails
+                .into(profileImage);
 
         //Copy paste but under time pressure (its 5:30 am).
         bottomNavigationView.setSelectedItemId(R.id.bottom_friends);
@@ -93,6 +103,8 @@ public class OtherProfileActivity extends VinigarCompatActivity
             return false;
         });
     }
+
+
 
     private void HandleButtonVisibility() {
         if (currentUser.getFriendsId().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user is friends with this person
