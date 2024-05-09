@@ -12,18 +12,22 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
+import java.util.List;
 
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.search.OtherProfileActivity;
-import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.AndroidHelper;
+import vinigarstudios.utility.FirebaseHelper;
 
 public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserModel, SearchUserRecyclerAdapter.UserModelViewHolder>
 {
     private Context context;
+
     public SearchUserRecyclerAdapter(@NonNull FirestoreRecyclerOptions<UserModel> options, Context context)
     {
         super(options);
@@ -33,21 +37,23 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
     @Override
     protected void onBindViewHolder(@NonNull UserModelViewHolder holder, int position, @NonNull UserModel model) {
         holder.usernameTextView.setText(model.GetUsername());
-        if(model.GetUserId().equals(FirebaseHelper.GetCurrentUserId())){
-            holder.usernameTextView.setText(model.GetUsername()+ " (Me)");
-            return;
+
+        // Load profile picture from profileImageURL
+        String profileImageURL = model.getProfileImageURL();
+        if (profileImageURL != null && !profileImageURL.isEmpty()) {
+            Uri uri = Uri.parse(profileImageURL);
+            Glide.with(context)
+                    .load(uri)
+                    .placeholder(R.drawable.greyicon)
+                    .error(R.drawable.greyicon)
+                    .into(holder.profilePic);
+        } else {
+            // Load default profile picture if no profileImageURL is available
+            holder.profilePic.setImageResource(R.drawable.greyicon);
         }
 
-        FirebaseHelper.GetOtherProfilePicStorageRef(model.GetUserId()).getDownloadUrl()
-                .addOnCompleteListener(t -> {
-                    if(t.isSuccessful()){
-                        Uri uri  = t.getResult();
-                        AndroidHelper.SetProfilePic(context, uri, holder.profilePic);
-                    }
-                });
-
         holder.itemView.setOnClickListener(v -> {
-            //navigate to other profile page
+            // Navigate to other profile page
             Intent intent = new Intent(context, OtherProfileActivity.class);
             AndroidHelper.PassUserModelAsIntent(intent, model);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -58,14 +64,15 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
     @NonNull
     @Override
     public UserModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.search_user_recycler_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_recycler_row, parent, false);
         return new UserModelViewHolder(view);
     }
 
-    class UserModelViewHolder extends RecyclerView.ViewHolder
+    static class UserModelViewHolder extends RecyclerView.ViewHolder
     {
         TextView usernameTextView;
         ImageView profilePic;
+
         public UserModelViewHolder(@NonNull View itemView) {
             super(itemView);
             this.usernameTextView = itemView.findViewById(R.id.searchUsernameText);
@@ -73,5 +80,3 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         }
     }
 }
-
-
