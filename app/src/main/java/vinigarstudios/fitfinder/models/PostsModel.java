@@ -1,10 +1,15 @@
 package vinigarstudios.fitfinder.models;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+
+import vinigarstudios.utility.FirebaseHelper;
 
 public class PostsModel implements IModel {
     private String photoURL;
@@ -13,10 +18,11 @@ public class PostsModel implements IModel {
     private String caption;
     private int likes;
     private Timestamp timestamp; // New field for timestamp
-    private UserModel userModel; // New field for UserModel
+
+    private UserModel userModel;
+    private String userModelJson;
     private String postId;
     private ArrayList<String> userIDsWhoLiked;
-    private int postsIdIncrement;
 
     public PostsModel() {
         // Empty constructor needed for Firestore
@@ -27,11 +33,21 @@ public class PostsModel implements IModel {
         this.profileUID = profileUID;
         this.title = title;
         this.caption = caption;
+        this.postId = profileUID + "_" + "TEMP";
         this.likes = likes;
         this.timestamp = Timestamp.now();
-        this.postId = profileUID + "_" + Integer.toString(postsIdIncrement);
         this.userIDsWhoLiked = new ArrayList<>();
-        this.postsIdIncrement += 1;
+
+        FirebaseHelper.GetCurrentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                userModel = task.getResult().toObject(UserModel.class);
+                postId = profileUID + "_" + Integer.toString(getUserModel().getPostsListIds().size());
+                userModel.AddToPostsList(PostsModel.this);
+                FirebaseHelper.ReplaceModelInDatabase("posts", profileUID + "_" + "TEMP", PostsModel.this);
+                FirebaseHelper.UpdateModelInDatabase("profiles", userModel, userModel);
+            }
+        });
     }
 
     public String getPostId() {
@@ -85,13 +101,8 @@ public class PostsModel implements IModel {
     public void setLikes(int likes) {
         this.likes = likes;
     }
-
     public UserModel getUserModel() {
         return userModel;
-    }
-
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
     }
 
     public ArrayList<String> getUserIDsWhoLiked() {
@@ -100,10 +111,6 @@ public class PostsModel implements IModel {
 
     public void setUserIDsWhoLiked(ArrayList<String> userIDsWhoLiked) {
         this.userIDsWhoLiked = userIDsWhoLiked;
-    }
-
-    public int getPostsIdIncrement() {
-        return postsIdIncrement;
     }
 
     @Override

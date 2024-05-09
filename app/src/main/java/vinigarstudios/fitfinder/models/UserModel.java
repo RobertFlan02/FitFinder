@@ -1,9 +1,19 @@
 package vinigarstudios.fitfinder.models;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.common.reflect.TypeToken;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+
+import vinigarstudios.utility.FirebaseHelper;
 
 public class UserModel implements IModel
 {
@@ -13,6 +23,7 @@ public class UserModel implements IModel
     private String username;
     private Timestamp createdAt;
     private String profileImageURL;
+    private ArrayList<String> postsListIds;
     private int followerCount;
     private ArrayList<String> friendsId;
     private ArrayList<String> friendRequestsDocIdList;
@@ -27,6 +38,7 @@ public class UserModel implements IModel
         this.followerCount = 0;
         this.friendsId = new ArrayList<>();
         this.friendRequestsDocIdList = new ArrayList<>();
+        this.postsListIds = new ArrayList<>();
     }
 
     public UserModel(UserModel copy) {
@@ -39,6 +51,7 @@ public class UserModel implements IModel
         this.followerCount = copy.followerCount;
         this.friendsId = copy.friendsId;
         this.friendRequestsDocIdList = copy.friendRequestsDocIdList;
+        this.postsListIds = new ArrayList<>();
     }
 
     public UserModel(String userId, String phone, String email, String username, Timestamp createdAt, String profileImageURL, int followerCount) {
@@ -51,6 +64,7 @@ public class UserModel implements IModel
         this.followerCount = followerCount;
         this.friendsId = new ArrayList<>();
         this.friendRequestsDocIdList = new ArrayList<>();
+        this.postsListIds = new ArrayList<>();
     }
 
     public String GetUserId() {
@@ -72,8 +86,6 @@ public class UserModel implements IModel
     public Timestamp GetCreatedAt() {
         return createdAt;
     }
-
-
 
     public void SetUserId(String userId) {
         this.userId = userId;
@@ -163,6 +175,28 @@ public class UserModel implements IModel
     public void setFriendRequestsDocIdList(ArrayList<String> friendRequestsDocIdList) {
         this.friendRequestsDocIdList = friendRequestsDocIdList;
 
+    }
+
+    public ArrayList<String> getPostsListIds()
+    {
+        return postsListIds;
+    }
+
+
+    public void AddToPostsList(String postId)
+    {
+        if (!postsListIds.contains(postId))
+        {
+            postsListIds.add(postId);;
+        }
+    }
+
+    public void AddToPostsList(PostsModel postsModel)
+    {
+        if (!postsListIds.contains(postsModel.getPostId()))
+        {
+            postsListIds.add(postsModel.getPostId());;
+        }
     }
 
     @Override
