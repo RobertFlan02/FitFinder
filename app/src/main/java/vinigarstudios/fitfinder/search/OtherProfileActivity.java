@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import vinigarstudios.fitfinder.MainActivity;
@@ -35,7 +36,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.otherprofile);
-
+        String userID = getIntent().getStringExtra("userID");
         otherUser = AndroidHelper.GetUserModelFromIntent(getIntent());
         username = findViewById(R.id.otherProfileUsernameText);
         profileImage = findViewById(R.id.otherProfileImage);
@@ -44,6 +45,8 @@ public class OtherProfileActivity extends VinigarCompatActivity
 
         username.setText(otherUser.getUsername());
         followerCount.setText("Followers: " + otherUser.getFollowerCount());
+
+
 
         this.addFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +63,13 @@ public class OtherProfileActivity extends VinigarCompatActivity
                 }
             }
         });
+
+        Glide.with(this)
+                .load(otherUser.getProfileImageURL())
+                .placeholder(R.drawable.greyicon) // Placeholder image while loading
+                .error(R.drawable.greyicon) // Error image if loading fails
+                .into(profileImage);
+
 
         this.bottomNavigationView = findViewById(R.id.bottomNavigation);
 
