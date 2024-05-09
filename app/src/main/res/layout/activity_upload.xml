@@ -97,10 +97,10 @@
             <ImageView
                 android:id="@+id/imageView_placeholder"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="400dp"
                 android:layout_gravity="center"
                 android:src="@drawable/avatar_cap"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:layout_marginTop="10dp"/>
 
             <Button
