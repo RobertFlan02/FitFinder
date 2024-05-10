@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         askNotificationPermission();
 
-
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 // Token retrieval successful
