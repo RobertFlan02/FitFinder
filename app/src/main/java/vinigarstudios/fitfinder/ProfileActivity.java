@@ -61,7 +61,7 @@ public class ProfileActivity extends VinigarCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Pass FirebaseFirestore instance to PostAdapter constructor
-        postAdapter = new PostAdapter(postsList, db);
+        postAdapter = new PostAdapter(this, postsList, db);
         recyclerView.setAdapter(postAdapter);
         fetchPostsFromFirestore();
 

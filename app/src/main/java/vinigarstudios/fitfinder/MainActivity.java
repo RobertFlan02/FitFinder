@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize PostAdapter
-        postAdapter = new PostAdapter(postsList, db);
+        postAdapter = new PostAdapter(this, postsList, db);
         recyclerView.setAdapter(postAdapter);
 
         // Fetch and display posts from Firestore

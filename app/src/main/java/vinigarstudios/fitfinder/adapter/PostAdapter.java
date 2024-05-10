@@ -1,5 +1,6 @@
 package vinigarstudios.fitfinder.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
@@ -28,9 +29,12 @@ import java.util.List;
 import java.util.Locale;
 
 import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
+import vinigarstudios.fitfinder.search.OtherProfileActivity;
+import vinigarstudios.utility.AndroidHelper;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 
@@ -38,14 +42,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private List<PostsModel> postsList;
     private static FirebaseFirestore db;
+    private Context context;
     private boolean refresh;
 
-    public PostAdapter(List<PostsModel> postsList, FirebaseFirestore db) {
+    public PostAdapter(Context context, List<PostsModel> postsList, FirebaseFirestore db) {
         this.postsList = postsList;
         this.db = db;
+        this.context = context;
     }
 
-    public PostAdapter(List<PostsModel> postsList) {
+    public PostAdapter(List<PostsModel> postsList, Context context) {
         this.postsList = postsList;
         this.db = FirebaseFirestore.getInstance();
     }
@@ -65,6 +71,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PostsModel post = postsList.get(position);
+        onRemoveButtonClick(holder, post);
+
+        onProfileImageClick(holder, post);
+
+        holder.bind(post);
+    }
+
+    private void onRemoveButtonClick(@NonNull PostViewHolder holder, PostsModel post) {
         holder.getRemovePostButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,8 +94,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 });
             }
         });
+    }
 
-        holder.bind(post);
+    private void onProfileImageClick(@NonNull PostViewHolder holder, PostsModel post) {
+        holder.getProfileImageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore.getInstance().collection("profiles").document(post.getProfileUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        UserModel user = task.getResult().toObject(UserModel.class);
+                        if (user.GetUserId().equals(FirebaseHelper.GetCurrentUserId()))
+                        {
+                            Intent intent = new Intent(context, ProfileActivity.class);
+                            context.startActivity(intent);
+                            return;
+                        }
+                        Intent intent = new Intent(context, OtherProfileActivity.class);
+                        AndroidHelper.PassUserModelAsIntent(intent, user);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -208,6 +244,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Button getRemovePostButton()
         {
             return removePostButton;
+        }
+
+        public ImageView getProfileImageView() {
+            return profileImageView;
         }
     }
 }
