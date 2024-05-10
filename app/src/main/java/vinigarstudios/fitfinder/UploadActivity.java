@@ -1,5 +1,7 @@
+// This class represents the Upload Activity where users can upload images with titles and captions.
 package vinigarstudios.fitfinder;
 
+// Importing necessary libraries and components.
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,11 +32,14 @@ import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
+// The main class for the Upload Activity.
 public class UploadActivity extends VinigarCompatActivity {
 
+    // Constants for request codes.
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
 
+    // Image and UI related variables.
     private ImageView imageView;
     private Uri selectedImageUri;
     private EditText editTextTitle;
@@ -43,14 +48,17 @@ public class UploadActivity extends VinigarCompatActivity {
     private Bitmap imageBitmap;
     private boolean isUploadInProgress = false;
 
+    // onCreate method to initialize the activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
+        // Initializing views and Firebase storage reference.
         imageView = findViewById(R.id.imageView_placeholder);
         storageRef = FirebaseStorage.getInstance().getReference();
 
+        // Setting up onClickListeners for camera and upload buttons.
         Button cameraButton = findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +75,7 @@ public class UploadActivity extends VinigarCompatActivity {
             }
         });
 
+        // Initializing other UI elements.
         editTextTitle = findViewById(R.id.editText_title);
         editTextCaption = findViewById(R.id.editText_caption);
 
@@ -83,6 +92,7 @@ public class UploadActivity extends VinigarCompatActivity {
             }
         });
 
+        // Setting up bottom navigation.
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_upload);
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -105,6 +115,7 @@ public class UploadActivity extends VinigarCompatActivity {
         });
     }
 
+    // Method to open the camera for capturing images.
     public void openCamera() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "Image");
@@ -115,6 +126,7 @@ public class UploadActivity extends VinigarCompatActivity {
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
     }
 
+    // Method to open the image chooser for selecting images from gallery.
     private void openImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -122,10 +134,10 @@ public class UploadActivity extends VinigarCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
     }
 
+    // Handling the result of camera capture or image selection.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (selectedImageUri != null) {
@@ -142,40 +154,37 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
-
-
-
+    // Method to save the captured or selected image to the gallery.
     private Uri saveImageToGallery() {
         if (imageBitmap == null) {
             Toast.makeText(this, "Image bitmap is null", Toast.LENGTH_SHORT).show();
             return null;
         }
 
-        // Define the values for the new image file
+        // Defining values for the new image file.
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_" + System.currentTimeMillis() + ".jpg");
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
 
-        // Insert the new image file into the MediaStore
+        // Inserting the new image file into the MediaStore.
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         if (uri == null) {
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
             return null;
         }
 
-        // Open an OutputStream to write the image data to the newly created file
+        // Writing the image bitmap to the OutputStream.
         try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
             if (outputStream == null) {
                 throw new IOException("OutputStream is null");
             }
-            // Compress and write the image bitmap to the OutputStream
             boolean success = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             if (!success) {
                 throw new IOException("Failed to compress bitmap");
             }
             outputStream.flush();
             Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
-            return uri; // Return the URI of the saved image
+            return uri;
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
@@ -183,34 +192,35 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
+    // Method to upload the image and post data to Firebase.
     private void uploadImageAndPostData() {
+        // Getting title and caption from EditText fields.
         String title = editTextTitle.getText().toString();
         String caption = editTextCaption.getText().toString();
 
+        // Validating input fields.
         if (title.isEmpty() || caption.isEmpty()) {
             Toast.makeText(this, "Title and caption cannot be empty", Toast.LENGTH_SHORT).show();
             isUploadInProgress = false;
             return;
         }
-
         if (title.length() > 60) {
             Toast.makeText(this, "Title cannot exceed 60 characters", Toast.LENGTH_SHORT).show();
             isUploadInProgress = false;
             return;
         }
-
         if (caption.length() > 150) {
             Toast.makeText(this, "Caption cannot exceed 150 characters", Toast.LENGTH_SHORT).show();
             isUploadInProgress = false;
             return;
         }
-
         if (selectedImageUri == null) {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
             isUploadInProgress = false;
             return;
         }
 
+        // Uploading image to Firebase Storage.
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -226,7 +236,7 @@ public class UploadActivity extends VinigarCompatActivity {
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     storeImageDataInFirestore(downloadUri.toString(), title, caption);
-                    // Send notification after storing image data in Firestore
+                    // Sending notification after storing image data in Firestore.
                     sendNotification();
                 }).addOnFailureListener(e -> {
                     Toast.makeText(UploadActivity.this, "Failed to retrieve download URL", Toast.LENGTH_SHORT).show();
@@ -242,11 +252,13 @@ public class UploadActivity extends VinigarCompatActivity {
             isUploadInProgress = false;
         }
     }
-    
+
+    // Method to send a notification.
     private void sendNotification() {
         FCMNotificationSender.sendFCMPostCreatedNotification();
     }
 
+    // Method to store image data in Firestore.
     private void storeImageDataInFirestore(String imageUrl, String title, String caption) {
         String uid = mAuth.getCurrentUser().getUid();
         PostsModel post = new PostsModel(imageUrl, uid, title, caption, 0);
