@@ -245,7 +245,7 @@ public class FriendsActivity extends VinigarCompatActivity
     private void SetupFriendReqRecyclerView(){
 
         Query query;
-        
+
         this.friendRequestRecyclerView = findViewById(R.id.friendRequestRecyclerList);
         if (currentUser.getFriendRequestsFromUserIdList().isEmpty())
         {
@@ -262,8 +262,8 @@ public class FriendsActivity extends VinigarCompatActivity
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();
 
-        friendRequestRecyclerAdapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
-        friendRequestRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        friendRequestRecyclerAdapter = new SearchUserRecyclerAdapter(options, getApplicationContext(), R.layout.friend_req_recycler_row);
+        friendRequestRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         friendRequestRecyclerView.setAdapter(friendRequestRecyclerAdapter);
         friendRequestRecyclerAdapter.startListening();
     }

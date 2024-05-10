@@ -27,11 +27,20 @@ import vinigarstudios.utility.FirebaseHelper;
 public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserModel, SearchUserRecyclerAdapter.UserModelViewHolder>
 {
     private Context context;
+    private int layout;
 
     public SearchUserRecyclerAdapter(@NonNull FirestoreRecyclerOptions<UserModel> options, Context context)
     {
         super(options);
         this.context = context;
+        this.layout = R.layout.search_user_recycler_row;
+    }
+
+    public SearchUserRecyclerAdapter(@NonNull FirestoreRecyclerOptions<UserModel> options, Context context, int layout)
+    {
+        super(options);
+        this.context = context;
+        this.layout = layout;
     }
 
     @Override
@@ -64,7 +73,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
     @NonNull
     @Override
     public UserModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_user_recycler_row, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new UserModelViewHolder(view);
     }
 
