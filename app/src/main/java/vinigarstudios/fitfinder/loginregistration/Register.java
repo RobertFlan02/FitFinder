@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,24 +18,15 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import vinigarstudios.fitfinder.MainActivity;
@@ -42,7 +35,6 @@ import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.notifications.FCMTokenManager;
 import vinigarstudios.utility.FirebaseHelper;
-
 
 public class Register extends AppCompatActivity {
 
@@ -58,36 +50,15 @@ public class Register extends AppCompatActivity {
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$");
 
-    //region Override Methods
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
         }
-    }
-
-    private boolean containsCapital(String str) {
-        for (char c : str.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Validate email format
-    private boolean isValidEmailLength(String email) {
-        String[] emailSplit = email.split("@");
-        return emailSplit.length == 2 && emailSplit[0].length() >= 5;
-    }
-
-    // Validate email format
-    private boolean isValidEmail(String email) {
-        return EMAIL_PATTERN.matcher(email).matches();
     }
 
     @Override
@@ -119,6 +90,24 @@ public class Register extends AppCompatActivity {
             }
         });
 
+        editTextPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Update password strength feedback whenever the password field changes
+                updatePasswordStrengthFeedback(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
+            }
+        });
+
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,8 +116,6 @@ public class Register extends AppCompatActivity {
                 finish();
             }
         });
-
-
 
         buttonReg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,8 +126,6 @@ public class Register extends AppCompatActivity {
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
                 confirmPassword = String.valueOf(editTextConfirmPassword.getText());
-
-
 
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
@@ -264,46 +249,88 @@ public class Register extends AppCompatActivity {
 
     }
 
-    //region Private Methods
-
-    // Create a new user profile and associate it with the registered user
-    //Use SetData instead
-    @Deprecated
-    private void createUserProfile(String userId, String userEmail) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> user = new HashMap<>();
-        user.put("", username); // Initialize with empty profile name
-        user.put("profileImageURL", ""); // Initialize with empty profile image URL
-        user.put("followerCount", 0); // Initialize follower count to 0
-
-        db.collection("profiles").document(userId) // Use the UID as the document ID
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "User profile created successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error creating user profile", e);
-                    }
-                });
+    // Method to calculate password strength
+    private int getPasswordStrength(String password) {
+        int strength = 0;
+        if (password.length() >= 6) {
+            strength++;
+        }
+        if (containsCapital(password)) {
+            strength++;
+        }
+        if (password.matches(".*\\d.*")) {
+            strength++;
+        }
+        if (password.matches(".*[!@#$%^&*()].*")) {
+            strength++;
+        }
+        return strength;
     }
 
-    private void SetData(String token){
-
-        if (userModel != null)
-        {
-            userModel.SetUsername(username);
+    // Method to update password strength feedback
+    private void updatePasswordStrengthFeedback(String password) {
+        int strength = getPasswordStrength(password);
+        // Provide feedback to the user based on the password strength
+        // You can customize this part according to your UI
+        switch (strength) {
+            case 0:
+                // Password too weak
+                // Update UI accordingly
+                Toast.makeText(Register.this, "Password too weak. Try more characters", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                // Weak password
+                // Update UI accordingly
+                Toast.makeText(Register.this, "Weak password. Make 1 character capital", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                // Medium strength password
+                // Update UI accordingly
+                Toast.makeText(Register.this, "Medium strength password. Add a number", Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                // Strong password
+                // Update UI accordingly
+                Toast.makeText(Register.this, "Strong password. Add special symbol", Toast.LENGTH_SHORT).show();
+                break;
+            case 4:
+                // Very strong password
+                // Update UI accordingly
+                Toast.makeText(Register.this, "Very strong password", Toast.LENGTH_SHORT).show();
+                break;
         }
-        else
-        {
-            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now(), "PROFILE IMAGE URL", 0, token);
+    }
+
+
+    // Method to check if password contains at least one capital letter
+    private boolean containsCapital(String str) {
+        for (char c : str.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Validate email format
+    private boolean isValidEmailLength(String email) {
+        String[] emailSplit = email.split("@");
+        return emailSplit.length == 2 && emailSplit[0].length() >= 5;
+    }
+
+    // Validate email format
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+
+    private void SetData(String token) {
+
+        if (userModel != null) {
+            userModel.SetUsername(username);
+        } else {
+            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", editTextEmail.getText().toString(), username, Timestamp.now(), "PROFILE IMAGE URL", 0, token);
         }
 
         FirebaseHelper.GetCurrentUserDetails().set(userModel);
     }
-    //endregion
 }
