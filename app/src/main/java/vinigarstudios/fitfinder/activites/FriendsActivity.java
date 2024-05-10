@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder.activites;
+package vinigarstudios.fitfinder;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -33,7 +33,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.adapter.FriendReqRecyclerAdapter;
 import vinigarstudios.fitfinder.adapter.PostAdapter;
 import vinigarstudios.fitfinder.adapter.SearchUserRecyclerAdapter;

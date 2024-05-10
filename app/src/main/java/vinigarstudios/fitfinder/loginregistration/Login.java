@@ -21,7 +21,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import vinigarstudios.fitfinder.activites.MainActivity;
+import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
 
 public class Login extends AppCompatActivity {

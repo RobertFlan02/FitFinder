@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder.activites;
+package vinigarstudios.fitfinder;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,8 +19,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import vinigarstudios.fitfinder.FriendsActivity;
+import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
+import vinigarstudios.fitfinder.UploadActivity;
+import vinigarstudios.fitfinder.adapter.PostAdapter;
+import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.AndroidHelper;
 import vinigarstudios.utility.FirebaseHelper;

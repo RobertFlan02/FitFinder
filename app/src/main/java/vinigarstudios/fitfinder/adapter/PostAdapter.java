@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import vinigarstudios.fitfinder.activites.FriendsActivity;
-import vinigarstudios.fitfinder.activites.MainActivity;
-import vinigarstudios.fitfinder.activites.ProfileActivity;
+import vinigarstudios.fitfinder.FriendsActivity;
+import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;

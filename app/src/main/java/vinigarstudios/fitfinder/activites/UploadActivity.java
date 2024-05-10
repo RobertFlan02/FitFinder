@@ -1,5 +1,5 @@
 // This class represents the Upload Activity where users can upload images with titles and captions.
-package vinigarstudios.fitfinder.activites;
+package vinigarstudios.fitfinder;
 
 // Importing necessary libraries and components.
 import android.content.ContentValues;
@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -23,7 +27,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 import vinigarstudios.utility.FirebaseHelper;

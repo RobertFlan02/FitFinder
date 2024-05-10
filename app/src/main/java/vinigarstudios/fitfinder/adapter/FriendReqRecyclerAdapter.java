@@ -10,8 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,9 +22,12 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.auth.User;
 
-import vinigarstudios.fitfinder.activites.FriendsActivity;
-import vinigarstudios.fitfinder.activites.MainActivity;
+import java.util.ArrayList;
+
+import vinigarstudios.fitfinder.FriendsActivity;
+import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.AndroidHelper;
