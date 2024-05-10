@@ -139,7 +139,7 @@ public class ProfileActivity extends VinigarCompatActivity {
                         // Updates the username
                         editTextUsername.setText(username);
                         // Updates the follower count
-                        textViewFollowerCount.setText("Followers: " + followerCount);
+                        textViewFollowerCount.setText("Friend: " + followerCount);
                     } else {
                         Toast.makeText(ProfileActivity.this, "No such document", Toast.LENGTH_SHORT).show();
                     }
