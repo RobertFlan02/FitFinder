@@ -55,21 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         askNotificationPermission();
 
-
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Token retrieval successful
-                String token = task.getResult();
-                String msg = "Your FCM token: " + token; // Direct concatenation
-                Log.d(TAG, msg);
-                // Handle the token as needed (e.g., send it to your server)
-                // ...
-            } else {
-                // Token retrieval failed
-                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-            }
-        });
-
         FirebaseMessaging.getInstance().subscribeToTopic("web_app")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -104,9 +89,8 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    // FCM SDK (and your app) can post notifications.
+                    // Can post notifications.
                 } else {
-                    // TODO: Inform user that that your app will not show notifications.
                 }
             });
 
@@ -115,12 +99,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED) {
-                // FCM SDK (and your app) can post notifications.
+                // Can post notifications.
 
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-
-                //Build Cutomize Alert Dialog
-
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Notification Permission")
                         .setMessage("Please Allow Notification Permission")

@@ -1,6 +1,7 @@
 package vinigarstudios.fitfinder.adapter;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.google.firebase.installations.remote.TokenResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -20,11 +24,13 @@ import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.utility.FirebaseHelper;
+import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     private List<PostsModel> postsList;
     private static FirebaseFirestore db;
+    private static final String TAG = "MyFirebaseMsgService";
 
     public PostAdapter(List<PostsModel> postsList, FirebaseFirestore db) {
         this.postsList = postsList;
@@ -70,6 +76,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private ImageView profileImageView;
         private TextView usernameTextView;
         private Button likeButton;
+        private String token;
+        private String msg;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,8 +101,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Token retrieval successful
+                            token = task.getResult();
+                            msg = "Your FCM token: " + token; // Direct concatenation
+                            Log.d(TAG, msg);
+                        } else {
+                            // Token retrieval failed
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                        }
+                    });
                     if(!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
                     {
+                        FCMNotificationSender.sendFCMLikeNotification(token);
                         post.setLikes(post.getLikes() + 1);
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
@@ -104,6 +124,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     }
                     else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
                     {
+                        FCMNotificationSender.sendFCMDislikeNotification(token);
                         post.setLikes(post.getLikes() - 1);
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
