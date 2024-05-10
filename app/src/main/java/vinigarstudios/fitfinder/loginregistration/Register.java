@@ -29,9 +29,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.regex.Pattern;
 
-import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.activites.MainActivity;
 import vinigarstudios.fitfinder.R;
-import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.fitfinder.notifications.FCMTokenManager;
 import vinigarstudios.utility.FirebaseHelper;

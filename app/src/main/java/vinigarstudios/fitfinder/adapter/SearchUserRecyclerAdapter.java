@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import vinigarstudios.fitfinder.MainActivity;
+import vinigarstudios.fitfinder.activites.MainActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.AndroidHelper;

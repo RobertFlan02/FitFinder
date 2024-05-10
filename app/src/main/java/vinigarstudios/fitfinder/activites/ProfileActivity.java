@@ -1,8 +1,7 @@
-package vinigarstudios.fitfinder;
+package vinigarstudios.fitfinder.activites;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.adapter.PostAdapter;
 import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.models.PostsModel;

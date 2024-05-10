@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder;
+package vinigarstudios.fitfinder.activites;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -36,6 +36,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.ArrayList;
 import java.util.List;
 
+import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.adapter.PostAdapter;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;

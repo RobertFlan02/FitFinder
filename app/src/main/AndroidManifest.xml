@@ -26,13 +26,13 @@
         android:theme="@style/Theme.Material3.Light"
         tools:targetApi="31">
         <activity
-            android:name=".ProfileActivity"
+            android:name=".activites.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".UploadActivity"
+            android:name=".activites.UploadActivity"
             android:exported="false" />
         <activity
-            android:name=".FriendsActivity"
+            android:name=".activites.FriendsActivity"
             android:exported="false" />
         <activity
             android:name=".loginregistration.Register"
@@ -41,17 +41,17 @@
         <activity
             android:name=".deprecated.Search"
             android:exported="true"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activites.MainActivity"
             android:theme="@style/Theme.Material3.Light" />
         <activity
-            android:name=".MainActivity$OtherProfileActivity"
+            android:name=".activites.MainActivity$OtherProfileActivity"
             android:exported="true"
-            android:parentActivityName=".FriendsActivity"
+            android:parentActivityName=".activites.FriendsActivity"
             android:theme="@style/Theme.Material3.Light" />
         <activity
             android:name=".deprecated.SearchUserActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activites.MainActivity"
             android:theme="@style/Theme.Material3.Light" />
         <activity
             android:name=".loginregistration.Login"
@@ -64,10 +64,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activites.MainActivity"
             android:exported="true" />
 
-        <service android:name=".MyFirebaseMessagingService"
+        <service android:name="vinigarstudios.utility.FirebaseHelper$MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
