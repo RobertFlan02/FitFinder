@@ -47,6 +47,8 @@
             tools:listitem="@layout/post_item" />
     </LinearLayout>
 
+
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

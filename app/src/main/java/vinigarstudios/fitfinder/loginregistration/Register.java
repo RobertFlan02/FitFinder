@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -99,6 +101,23 @@ public class Register extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.btn_loginNow);
         editTextConfirmPassword = findViewById(R.id.confirm_password);
+        ToggleButton showPasswordToggle = findViewById(R.id.show_password_toggle);
+
+        showPasswordToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (showPasswordToggle.isChecked()) {
+                    // Show the password
+                    editTextPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    editTextConfirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else {
+                    // Hide the password
+                    editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    editTextConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+        });
+
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +126,8 @@ public class Register extends AppCompatActivity {
                 finish();
             }
         });
+
+
 
         buttonReg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +138,8 @@ public class Register extends AppCompatActivity {
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
                 confirmPassword = String.valueOf(editTextConfirmPassword.getText());
+
+
 
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();

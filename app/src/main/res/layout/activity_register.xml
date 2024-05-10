@@ -12,6 +12,8 @@
       android:gravity="center"
       android:padding="15dp">
 
+    <!-- Other views for registration form -->
+
     <ImageView
         android:id="@+id/logo2"
         android:layout_width="250dp"
@@ -20,15 +22,7 @@
         android:src="@drawable/logo2"
         android:contentDescription="@string/logo"/>
 
-    <TextView
-        android:text="@string/create_your_account"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+    <!-- Username EditText -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -39,6 +33,7 @@
           android:layout_height="wrap_content"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Email EditText -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -52,6 +47,7 @@
           android:importantForAutofill="yes" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Password EditText -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -64,8 +60,10 @@
           android:layout_height="wrap_content"
           android:autofillHints="password"
           android:importantForAutofill="yes" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Confirm Password EditText -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -78,30 +76,50 @@
           android:layout_height="wrap_content"
           android:autofillHints="password"
           android:importantForAutofill="yes" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Show Password Toggle Button -->
+    <ToggleButton
+        android:id="@+id/show_password_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Password"
+        android:layout_below="@id/confirm_password"
+        android:layout_marginTop="8dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Password"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
+
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <!-- Register Button -->
     <Button
         android:id="@+id/btn_register"
         android:text="@string/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/button_background"/>
 
+    <!-- Existing Account Text -->
     <TextView
         android:id="@+id/textViewExistingAccount"
         android:text="@string/already_have_an_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="15dp"/>
 
+    <!-- Login Button -->
     <Button
         android:id="@+id/btn_loginNow"
         android:text="@string/use_existing_login"
