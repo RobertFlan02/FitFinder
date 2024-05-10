@@ -206,22 +206,14 @@ public class FriendsActivity extends VinigarCompatActivity
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                database.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.getResult().size() > 0) //if posts collection has documents (FetchPosts crashes if on 0 posts).
-                        {
-                            int itemId = item.getItemId();
-                            if (itemId == R.id.action_order_by_time) {
-                                listOrder = ListOrder.time;
-                                FetchPostsFromFirestore();
-                            } else if (itemId == R.id.action_order_by_likes) {
-                                listOrder = ListOrder.likes;
-                                FetchPostsFromFirestore();
-                            }
-                        }
-                    }
-                });
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_order_by_time) {
+                    listOrder = ListOrder.time;
+                    FetchPostsFromFirestore();
+                } else if (itemId == R.id.action_order_by_likes) {
+                    listOrder = ListOrder.likes;
+                    FetchPostsFromFirestore();
+                }
             }
         });
         return true;
@@ -331,9 +323,19 @@ public class FriendsActivity extends VinigarCompatActivity
 
     private void FetchPostsFromFirestore()
     {
-        database.collection("posts")
-                .whereIn("profileUID", currentUser.getFriendsId()) // Filter by the UIDs of the currentUsers friendsId.
-                .orderBy(listOrder.value, Query.Direction.DESCENDING)
+        Query query;
+        if (!currentUser.getFriendsId().isEmpty())
+        {
+            query = database.collection("posts")
+                    .whereIn("profileUID", currentUser.getFriendsId()) // Filter by the UIDs of the currentUsers friendsId.
+                    .orderBy(listOrder.value, Query.Direction.DESCENDING);
+        }
+        else
+        {
+            query = database.collection("posts")
+                    .whereEqualTo("profileUID", ""); // Filter by the UIDs of the currentUsers friendsId.
+        }
+                query
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     postsList = new ArrayList<>();
