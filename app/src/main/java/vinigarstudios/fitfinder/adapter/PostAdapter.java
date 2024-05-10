@@ -77,7 +77,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private ImageView profileImageView;
         private TextView usernameTextView;
         private Button likeButton;
-        private String token;
+        private String posterToken;
         private String msg;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -118,6 +118,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
                         FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
+                        likeButton.setBackgroundColor(Color.rgb(1, 0, 1));
+                        FCMNotificationSender.sendFCMLikeReceivedNotification(posterToken);
+                    }
+                    else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
+                    {
                     } else {
                         // If liked, set unliked state and update text
                         likeButton.setText("🤍");
@@ -141,6 +146,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             .error(R.drawable.greyicon) // Error image
                             .into(profileImageView);
                     usernameTextView.setText(userModel.getUsername()); // Get username from UserModel
+
+                    posterToken = userModel.getToken(); // Assuming the field name is "token"
+                    Log.d("FCM Token", "Poster FCM Token: " + posterToken); // Log the FCM token
+
                 } else {
                     profileImageView.setImageResource(R.drawable.greyicon);
                     usernameTextView.setText("Unknown User");

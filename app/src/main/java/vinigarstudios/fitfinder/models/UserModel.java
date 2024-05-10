@@ -28,6 +28,8 @@ public class UserModel implements IModel
     private ArrayList<String> friendsId;
     private ArrayList<String> friendRequestsDocIdList;
     private ArrayList<String> friendRequestsFromUserIdList;
+    private String token;
+
     public UserModel()
     {
         this.userId = "DEFAULT PLACEHOLDER";
@@ -37,6 +39,7 @@ public class UserModel implements IModel
         this.createdAt = Timestamp.now();
         this.profileImageURL = "DEFAULT PLACEHOLDER";
         this.followerCount = 0;
+        this.token = "DEFUALT PLACEHOLDER";
         this.friendsId = new ArrayList<>();
         this.friendRequestsDocIdList = new ArrayList<>();
         this.postsListIds = new ArrayList<>();
@@ -51,13 +54,14 @@ public class UserModel implements IModel
         this.createdAt = copy.createdAt;
         this.profileImageURL = copy.profileImageURL;
         this.followerCount = copy.followerCount;
+        this.token = copy.token;
         this.friendsId = copy.friendsId;
         this.friendRequestsDocIdList = copy.friendRequestsDocIdList;
         this.postsListIds = copy.postsListIds;
         this.friendRequestsFromUserIdList = copy.friendRequestsFromUserIdList;
     }
 
-    public UserModel(String userId, String phone, String email, String username, Timestamp createdAt, String profileImageURL, int followerCount) {
+    public UserModel(String userId, String phone, String email, String username, Timestamp createdAt, String profileImageURL, int followerCount, String token) {
         this.userId = userId;
         this.phone = phone;
         this.email = email;
@@ -69,6 +73,7 @@ public class UserModel implements IModel
         this.friendRequestsDocIdList = new ArrayList<>();
         this.postsListIds = new ArrayList<>();
         this.friendRequestsFromUserIdList = new ArrayList<>();
+        this.token = token;
     }
 
     public String GetUserId() {
@@ -139,6 +144,8 @@ public class UserModel implements IModel
 
     public int getFollowerCount() { return followerCount; }
 
+    public String getToken() { return token; }
+
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -171,6 +178,8 @@ public class UserModel implements IModel
     public void setFriendRequestsFromUserIdList(ArrayList<String> friendRequestsFromUserIdList) {
         this.friendRequestsFromUserIdList = friendRequestsFromUserIdList;
     }
+
+    public void setToken(String token) { this.token = token; }
 
     public ArrayList<String> getFriendsId() {
         return friendsId;

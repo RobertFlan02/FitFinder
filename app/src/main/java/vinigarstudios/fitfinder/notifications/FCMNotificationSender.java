@@ -12,32 +12,8 @@ public class FCMNotificationSender {
     private static final String TAG = "FCMNotificationSender";
     private static final String SERVER_KEY = "AAAADvN99lw:APA91bHtV_hBawYTns8z7wVPToqq94gv3Zem4pVqf2_mTHcIivL-OL-5KIXkuuuyBaPFXAg6W3kfWvuiiF4V0rgjjpyUErOq0EU_wxuT8HsETCnT6dAH_XAkKtgwjEijyGQMyKVXHNNN";
 
-    public static void sendFCMLikeNotification() {
-        FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
-            @Override
-            public void onTokenRetrieved(String token) {
-                sendFCMNotification(token, "You Liked a Post", "Cool");
-            }
-
-            @Override
-            public void onTokenRetrievalFailed(Exception exception) {
-                Log.e(TAG, "Failed to retrieve FCM token", exception);
-            }
-        });
-    }
-
-    public static void sendFCMDislikeNotification() {
-        FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
-            @Override
-            public void onTokenRetrieved(String token) {
-                sendFCMNotification(token, "You Disliked a Post", "Not so Cool");
-            }
-
-            @Override
-            public void onTokenRetrievalFailed(Exception exception) {
-                Log.e(TAG, "Failed to retrieve FCM token", exception);
-            }
-        });
+    public static void sendFCMLikeReceivedNotification(String posterToken) {
+        sendFCMNotification(posterToken, "Someone liked your post", "You must have good taste!");
     }
 
     public static void sendFCMPostCreatedNotification() {
