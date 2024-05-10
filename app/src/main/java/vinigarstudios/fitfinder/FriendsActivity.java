@@ -73,18 +73,19 @@ public class FriendsActivity extends VinigarCompatActivity
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 currentUser = task.getResult().toObject(UserModel.class);
+                SetupFriendReqRecyclerView();
                 database.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.getResult().size() > 0) //if posts collection has documents (FetchPosts crashes if on 0 posts).
                         {
                             FetchPostsFromFirestore();
-                            SetupFriendReqRecyclerView();
                         }
                     }
                 });
             }
         });
+
 
         this.friendsFilterSwitch.setVisibility(View.INVISIBLE);
 
@@ -142,6 +143,7 @@ public class FriendsActivity extends VinigarCompatActivity
                 SetFriendPageVisibility(View.VISIBLE);
                 likesFilter.setEnabled(true);
                 timeFilter.setEnabled(true);
+                SetupFriendReqRecyclerView();
             }
         });
 
@@ -260,7 +262,7 @@ public class FriendsActivity extends VinigarCompatActivity
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();
 
-        friendRequestRecyclerAdapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
+        friendRequestRecyclerAdapter = new SearchUserRecyclerAdapter(options, getApplicationContext(), R.layout.friend_req_recycler_row);
         friendRequestRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         friendRequestRecyclerView.setAdapter(friendRequestRecyclerAdapter);
         friendRequestRecyclerAdapter.startListening();

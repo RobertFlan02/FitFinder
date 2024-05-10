@@ -233,41 +233,48 @@ public class UserModel implements IModel
 
     public void DeclineUser(UserModel otherUser)
     {
-        for(String string : getFriendRequestsDocIdList())
+        for(String string : getFriendRequestsFromUserIdList())
         {
             if (string.startsWith(otherUser.getUserId()))
             {
-                this.RemoveUserAndDeleteFriendRequest(string);
+                this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUser.getUserId());
+                this.getFriendRequestsFromUserIdList().remove(otherUser.getUserId());
             }
         }
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
+    @Deprecated
     public void DeclineUser(String otherUserId)
     {
-        for(String string : getFriendRequestsDocIdList())
+        for(String string : getFriendRequestsFromUserIdList())
         {
             if (string.startsWith(otherUserId))
             {
-                this.RemoveUserAndDeleteFriendRequest(string);
+                this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUserId);
+                this.getFriendRequestsFromUserIdList().remove(otherUserId);
+
             }
         }
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
+    @Deprecated
     public void DeclineFriendReq(String friendRequestId)
     {
-        this.RemoveUserAndDeleteFriendRequest(friendRequestId);
+        this.RemoveUserAndDeleteFriendRequest("afafa");
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
     public void AcceptUser(UserModel otherUser)
     {
-        for(String string : getFriendRequestsDocIdList())
+        for(String string : getFriendRequestsFromUserIdList())
         {
             if (string.startsWith(otherUser.getUserId()))
             {
-                this.RemoveUserAndDeleteFriendRequest(string);
+                this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUser.getUserId());
+                this.getFriendRequestsFromUserIdList().remove(otherUser.getUserId());
+
 
                 this.getFriendsId().add(otherUser.getUserId());
                 this.setFollowerCount(this.getFriendsId().size());
