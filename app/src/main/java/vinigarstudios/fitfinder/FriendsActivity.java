@@ -79,6 +79,7 @@ public class FriendsActivity extends VinigarCompatActivity
                         if (task.getResult().size() > 0) //if posts collection has documents (FetchPosts crashes if on 0 posts).
                         {
                             FetchPostsFromFirestore();
+                            SetupFriendReqRecyclerView();
                         }
                     }
                 });

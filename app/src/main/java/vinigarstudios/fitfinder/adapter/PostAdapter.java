@@ -110,28 +110,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
+                    if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
+                        // If already liked, set unliked state and update text
+                        likeButton.setText("🤍");
+                        post.setLikes(post.getLikes() - 1);
+                        likesTextView.setText(String.valueOf(post.getLikes()));
+                        post.getUserIDsWhoLiked().remove(FirebaseHelper.GetCurrentUserId());
+                    } else {
                         // If not liked, set liked state and update text
                         likeButton.setText("❤️");
                         post.setLikes(post.getLikes() + 1);
-                        PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
-                        FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
-                        likeButton.setBackgroundColor(Color.rgb(1, 0, 1));
+                        // Send like notification
                         FCMNotificationSender.sendFCMLikeReceivedNotification(posterToken);
                     }
-                    else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
-                    {
-                    } else {
-                        // If liked, set unliked state and update text
-                        likeButton.setText("🤍");
-                        post.setLikes(post.getLikes() - 1);
-                        PostsModel newPost = post;
-                        likesTextView.setText(String.valueOf(post.getLikes()));
-                        post.getUserIDsWhoLiked().remove(FirebaseHelper.GetCurrentUserId());
-                        FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
-                    }
+                    // Update like status in Firestore
+                    FirebaseHelper.UpdateModelInDatabase("posts", post, post);
                 }
             });
 
