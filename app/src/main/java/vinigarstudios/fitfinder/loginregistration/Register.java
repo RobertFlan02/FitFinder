@@ -38,6 +38,7 @@ import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.loginregistration.Login;
 import vinigarstudios.fitfinder.models.UserModel;
+import vinigarstudios.fitfinder.notifications.FCMTokenManager;
 import vinigarstudios.utility.FirebaseHelper;
 
 
@@ -203,10 +204,21 @@ public class Register extends AppCompatActivity {
                                                             if (user != null) {
                                                                 String userId = user.getUid();
                                                                 String userEmail = user.getEmail();
+                                                                FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
+                                                                    @Override
+                                                                    public void onTokenRetrieved(String token) {
+                                                                        Log.d(TAG, "FCM token retrieved: " + token);
+                                                                        SetData(token);
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onTokenRetrievalFailed(Exception exception) {
+                                                                        Log.e(TAG, "Failed to retrieve FCM token", exception);
+                                                                    }
+                                                                });
                                                             }
 
                                                             Toast.makeText(Register.this, "Account Made", Toast.LENGTH_SHORT).show();
-                                                            SetData();
                                                             Intent intent = new Intent(getApplicationContext(), Login.class);
                                                             startActivity(intent);
                                                             finish();
@@ -257,7 +269,7 @@ public class Register extends AppCompatActivity {
                 });
     }
 
-    private void SetData(){
+    private void SetData(String token){
 
         if (userModel != null)
         {
@@ -265,7 +277,7 @@ public class Register extends AppCompatActivity {
         }
         else
         {
-            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now(), "PROFILE IMAGE URL", 0);
+            userModel = new UserModel(mAuth.getCurrentUser().getUid(), "PHONE NUMBER", Objects.requireNonNull(editTextEmail.getText()).toString(), username, Timestamp.now(), "PROFILE IMAGE URL", 0, token);
         }
 
         FirebaseHelper.GetCurrentUserDetails().set(userModel);
