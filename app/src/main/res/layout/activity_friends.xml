@@ -16,11 +16,16 @@
     <LinearLayout
         android:id="@+id/profile_title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:background="@color/purple_200"
         android:orientation="vertical"
         android:paddingTop="16dp"
         android:paddingBottom="50dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friendRequestRecyclerList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

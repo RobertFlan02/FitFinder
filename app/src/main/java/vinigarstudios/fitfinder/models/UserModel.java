@@ -27,6 +27,7 @@ public class UserModel implements IModel
     private int followerCount;
     private ArrayList<String> friendsId;
     private ArrayList<String> friendRequestsDocIdList;
+    private ArrayList<String> friendRequestsFromUserIdList;
     public UserModel()
     {
         this.userId = "DEFAULT PLACEHOLDER";
@@ -39,6 +40,7 @@ public class UserModel implements IModel
         this.friendsId = new ArrayList<>();
         this.friendRequestsDocIdList = new ArrayList<>();
         this.postsListIds = new ArrayList<>();
+        friendRequestsFromUserIdList = new ArrayList<>();
     }
 
     public UserModel(UserModel copy) {
@@ -51,7 +53,8 @@ public class UserModel implements IModel
         this.followerCount = copy.followerCount;
         this.friendsId = copy.friendsId;
         this.friendRequestsDocIdList = copy.friendRequestsDocIdList;
-        this.postsListIds = new ArrayList<>();
+        this.postsListIds = copy.postsListIds;
+        this.friendRequestsFromUserIdList = copy.friendRequestsFromUserIdList;
     }
 
     public UserModel(String userId, String phone, String email, String username, Timestamp createdAt, String profileImageURL, int followerCount) {
@@ -65,6 +68,7 @@ public class UserModel implements IModel
         this.friendsId = new ArrayList<>();
         this.friendRequestsDocIdList = new ArrayList<>();
         this.postsListIds = new ArrayList<>();
+        this.friendRequestsFromUserIdList = new ArrayList<>();
     }
 
     public String GetUserId() {
@@ -159,6 +163,14 @@ public class UserModel implements IModel
     public void setProfileImageURL(String profileImageURL) { this.profileImageURL = profileImageURL; }
 
     public void setFollowerCount(int followerCount) { this.followerCount = followerCount; }
+
+    public ArrayList<String> getFriendRequestsFromUserIdList() {
+        return friendRequestsFromUserIdList;
+    }
+
+    public void setFriendRequestsFromUserIdList(ArrayList<String> friendRequestsFromUserIdList) {
+        this.friendRequestsFromUserIdList = friendRequestsFromUserIdList;
+    }
 
     public ArrayList<String> getFriendsId() {
         return friendsId;

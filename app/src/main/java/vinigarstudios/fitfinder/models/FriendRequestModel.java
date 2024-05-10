@@ -7,6 +7,11 @@ public class FriendRequestModel implements IModel
     private String friendReqId;
 
     private int friendReqIncrement;
+
+    public FriendRequestModel()
+    {
+
+    }
     public FriendRequestModel(String fromUserId, UserModel toUser)
     {
         this.fromUserId = fromUserId;

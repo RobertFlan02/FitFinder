@@ -19,7 +19,7 @@ public class FriendRequestHandler
         FriendRequestModel friendRequest = new FriendRequestModel(fromUserId, toUser);
         DocumentReference docRef = FirebaseHelper.UploadModelToDatabase("friendRequests", friendRequest, friendRequest.getFriendReqId());
         toUser.getFriendRequestsDocIdList().add(docRef.getId());
-        toUser.setFriendRequestsDocIdList(toUser.getFriendRequestsDocIdList());
+        toUser.getFriendRequestsFromUserIdList().add(friendRequest.getFromUserId());
         FirebaseHelper.UpdateModelInDatabase("profiles", toUser, toUser);
         return true;
     }
