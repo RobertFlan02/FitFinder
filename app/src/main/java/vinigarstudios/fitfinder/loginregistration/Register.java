@@ -267,42 +267,36 @@ public class Register extends AppCompatActivity {
         return strength;
     }
 
-    // Method to update password strength feedback
+
     private void updatePasswordStrengthFeedback(String password) {
         int strength = getPasswordStrength(password);
-        // Provide feedback to the user based on the password strength
-        // You can customize this part according to your UI
+
         switch (strength) {
             case 0:
-                // Password too weak
-                // Update UI accordingly
+
                 Toast.makeText(Register.this, "Password too weak. Try more characters", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                // Weak password
-                // Update UI accordingly
+
                 Toast.makeText(Register.this, "Weak password. Make 1 character capital", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                // Medium strength password
-                // Update UI accordingly
+
                 Toast.makeText(Register.this, "Medium strength password. Add a number", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-                // Strong password
-                // Update UI accordingly
+
                 Toast.makeText(Register.this, "Strong password. Add special symbol", Toast.LENGTH_SHORT).show();
                 break;
             case 4:
-                // Very strong password
-                // Update UI accordingly
+
                 Toast.makeText(Register.this, "Very strong password", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
 
-    // Method to check if password contains at least one capital letter
+
     private boolean containsCapital(String str) {
         for (char c : str.toCharArray()) {
             if (Character.isUpperCase(c)) {
@@ -312,7 +306,7 @@ public class Register extends AppCompatActivity {
         return false;
     }
 
-    // Validate email format
+
     private boolean isValidEmailLength(String email) {
         String[] emailSplit = email.split("@");
         return emailSplit.length == 2 && emailSplit[0].length() >= 5;
