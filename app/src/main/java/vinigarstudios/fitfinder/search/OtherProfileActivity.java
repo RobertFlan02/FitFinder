@@ -137,7 +137,8 @@ public class OtherProfileActivity extends VinigarCompatActivity
             public void onClick(View v) {
                 if (FriendRequestHandler.SendFriendRequest(FirebaseHelper.GetCurrentUserId(), otherUser))
                 {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    Toast.makeText(getApplicationContext(), "Friend Request Sent to " + otherUser.getUsername() + "!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
                     finish();
                 }
                 else

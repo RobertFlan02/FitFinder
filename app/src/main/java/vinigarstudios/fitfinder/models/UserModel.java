@@ -40,7 +40,7 @@ public class UserModel implements IModel
         this.friendsId = new ArrayList<>();
         this.friendRequestsDocIdList = new ArrayList<>();
         this.postsListIds = new ArrayList<>();
-        friendRequestsFromUserIdList = new ArrayList<>();
+        this.friendRequestsFromUserIdList = new ArrayList<>();
     }
 
     public UserModel(UserModel copy) {
