@@ -91,6 +91,17 @@
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
+            <!-- RemovePost Button -->
+            <Button
+                android:id="@+id/removePostButton"
+                android:layout_width="78dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="🗑️"
+                android:textColor="#FF0000"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
             <!-- Timestamp -->
             <TextView
                 android:id="@+id/timestampTextView"

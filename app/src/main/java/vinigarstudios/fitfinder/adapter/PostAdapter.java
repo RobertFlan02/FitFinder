@@ -1,5 +1,6 @@
 package vinigarstudios.fitfinder.adapter;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.installations.remote.TokenResult;
@@ -23,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
@@ -33,6 +38,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private List<PostsModel> postsList;
     private static FirebaseFirestore db;
+    private boolean refresh;
 
     public PostAdapter(List<PostsModel> postsList, FirebaseFirestore db) {
         this.postsList = postsList;
@@ -59,6 +65,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PostsModel post = postsList.get(position);
+        holder.getRemovePostButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseHelper.GetCurrentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        UserModel currentUser = task.getResult().toObject(UserModel.class);
+                        currentUser.RemoveFromPostsList(post);
+                        FirebaseHelper.RemoveModelInDatabase("posts", post);
+                        postsList.remove(post);
+                        notifyItemRemoved(postsList.indexOf(post));
+                    }
+                });
+            }
+        });
+
         holder.bind(post);
     }
 
@@ -77,6 +99,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private ImageView profileImageView;
         private TextView usernameTextView;
         private Button likeButton;
+
+        private Button removePostButton;
         private String posterToken;
         private String msg;
 
@@ -90,6 +114,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             profileImageView = itemView.findViewById(R.id.profileImageView);
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
             likeButton = itemView.findViewById(R.id.likeButton);
+            removePostButton = itemView.findViewById(R.id.removePostButton);
         }
 
         public void bind(PostsModel post) {
@@ -98,6 +123,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likesTextView.setText(String.valueOf(post.getLikes()));
             loadImage(post.getPhotoURL()); // Load image from URL
             displayTimestamp(post.getTimestamp()); // Display formatted timestamp
+
+            if (!post.getProfileUID().equals(FirebaseHelper.GetCurrentUserId()))
+            {
+                removePostButton.setVisibility(View.INVISIBLE);
+            }
 
             // Set initial text based on whether the post is liked or not
             if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
@@ -172,6 +202,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             } else {
                 timestampTextView.setText("No timestamp available");
             }
+        }
+
+        public
+        Button getRemovePostButton()
+        {
+            return removePostButton;
         }
     }
 }

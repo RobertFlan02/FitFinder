@@ -226,6 +226,15 @@ public class UserModel implements IModel
         }
     }
 
+    public void RemoveFromPostsList(PostsModel postsModel)
+    {
+        if (postsListIds.contains(postsModel.getPostId())) {
+            postsListIds.remove(postsModel.getPostId());
+            ;
+            FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
+        }
+    }
+
     @Override
     public String getDocumentId() {
         return userId;
