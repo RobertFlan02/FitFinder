@@ -1,6 +1,7 @@
 package vinigarstudios.fitfinder.adapter;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.installations.remote.TokenResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +27,7 @@ import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.FirebaseHelper;
+import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -72,6 +77,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private ImageView profileImageView;
         private TextView usernameTextView;
         private Button likeButton;
+        private String token;
+        private String msg;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);

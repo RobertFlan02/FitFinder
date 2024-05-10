@@ -24,6 +24,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 
 import vinigarstudios.fitfinder.models.PostsModel;
+import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
@@ -139,6 +140,47 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
+
+
+
+    private Uri saveImageToGallery() {
+        if (imageBitmap == null) {
+            Toast.makeText(this, "Image bitmap is null", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        // Define the values for the new image file
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_" + System.currentTimeMillis() + ".jpg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+
+        // Insert the new image file into the MediaStore
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        if (uri == null) {
+            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        // Open an OutputStream to write the image data to the newly created file
+        try (OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
+            if (outputStream == null) {
+                throw new IOException("OutputStream is null");
+            }
+            // Compress and write the image bitmap to the OutputStream
+            boolean success = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            if (!success) {
+                throw new IOException("Failed to compress bitmap");
+            }
+            outputStream.flush();
+            Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
+            return uri; // Return the URI of the saved image
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
     private void uploadImageAndPostData() {
         String title = editTextTitle.getText().toString();
         String caption = editTextCaption.getText().toString();
@@ -182,6 +224,8 @@ public class UploadActivity extends VinigarCompatActivity {
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     storeImageDataInFirestore(downloadUri.toString(), title, caption);
+                    // Send notification after storing image data in Firestore
+                    sendNotification();
                 }).addOnFailureListener(e -> {
                     Toast.makeText(UploadActivity.this, "Failed to retrieve download URL", Toast.LENGTH_SHORT).show();
                     isUploadInProgress = false;
@@ -195,6 +239,10 @@ public class UploadActivity extends VinigarCompatActivity {
             Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
             isUploadInProgress = false;
         }
+    }
+    
+    private void sendNotification() {
+        FCMNotificationSender.sendFCMPostCreatedNotification();
     }
 
     private void storeImageDataInFirestore(String imageUrl, String title, String caption) {
