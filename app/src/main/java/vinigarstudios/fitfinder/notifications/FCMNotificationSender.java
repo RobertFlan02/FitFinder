@@ -10,12 +10,16 @@ import java.net.URL;
 public class FCMNotificationSender {
 
     private static final String TAG = "FCMNotificationSender";
+
+    // Firebase Cloud Messaging Server_Key to allow requests to send notifications
     private static final String SERVER_KEY = "AAAADvN99lw:APA91bHtV_hBawYTns8z7wVPToqq94gv3Zem4pVqf2_mTHcIivL-OL-5KIXkuuuyBaPFXAg6W3kfWvuiiF4V0rgjjpyUErOq0EU_wxuT8HsETCnT6dAH_XAkKtgwjEijyGQMyKVXHNNN";
 
+    // Method to send a notification when someone likes your post
     public static void sendFCMLikeReceivedNotification(String posterToken) {
         sendFCMNotification(posterToken, "Someone liked your post", "You must have good taste!");
     }
 
+    // Method to send a creation notification when you make a post
     public static void sendFCMPostCreatedNotification() {
         FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
             @Override
@@ -30,6 +34,7 @@ public class FCMNotificationSender {
         });
     }
 
+    // Method that handles notification processing through connecting to the Firebase Cloud Messaging System
     private static void sendFCMNotification(String deviceToken, String title, String body) {
         new AsyncTask<String, Void, Void>() {
             @Override

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +31,6 @@ import java.util.List;
 
 import vinigarstudios.fitfinder.adapter.PostAdapter;
 import vinigarstudios.fitfinder.models.PostsModel;
-import vinigarstudios.utility.FirebaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,28 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
     private int currentOrder = ORDER_BY_TIME;
 
-    private static final String TAG = "MainActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Request permission to send notifications to user
         askNotificationPermission();
-
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Token retrieval successful
-                String token = task.getResult();
-                String msg = "Your FCM token: " + token; // Direct concatenation
-                Log.d(TAG, msg);
-                // Handle the token as needed (e.g., send it to your server)
-                // ...
-            } else {
-                // Token retrieval failed
-                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-            }
-        });
 
         FirebaseMessaging.getInstance().subscribeToTopic("web_app")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -100,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // Required to activate requestPermissionLauncher
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -108,13 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    // Prompt to ask users for notifications permissions
     private void askNotificationPermission() {
-        // This is only necessary for API level >= 33 (TIRAMISU)
+        // This is only necessary for API level >= 33 (TIRAMISU) i.e. Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
                     PackageManager.PERMISSION_GRANTED) {
                 // Can post notifications.
-
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Notification Permission")
@@ -133,15 +117,12 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .create()
                         .show();
-
-
             } else {
                 // Directly ask for the permission
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -188,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    // Bottom Navigation Bar
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setSelectedItemId(R.id.bottom_home);
