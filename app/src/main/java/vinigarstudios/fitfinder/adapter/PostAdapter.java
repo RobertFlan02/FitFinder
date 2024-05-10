@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import vinigarstudios.fitfinder.FriendsActivity;
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
@@ -213,8 +214,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 @Override
                 public void onClick(View v) {
                     postLikeThreaders.forEach(pThreader -> pThreader.start());
-                    //Threads cant be ran twice so we disable the button.
-                    likeAllButton.setVisibility(View.INVISIBLE);
+                    //Threads cant be ran twice so we refresh page.
+                    Intent intent = new Intent(postAdapter.context, FriendsActivity.class);
+                    postAdapter.context.startActivity(intent);
                 }
             });
 
@@ -246,14 +248,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         private void LikePost(PostsModel post) {
             // If not liked, set liked state and update text
-            likeButton.setText("❤️");
-            post.setLikes(post.getLikes() + 1);
-            likesTextView.setText(String.valueOf(post.getLikes()));
-            post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
-            // Send like notification
-            FCMNotificationSender.sendFCMLikeReceivedNotification(posterToken);
-            // Update like status in Firestore
-            FirebaseHelper.UpdateModelInDatabase("posts", post, post);
+            if (!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
+                likeButton.setText("❤️");
+                post.setLikes(post.getLikes() + 1);
+                likesTextView.setText(String.valueOf(post.getLikes()));
+                post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
+                // Send like notification
+                FCMNotificationSender.sendFCMLikeReceivedNotification(posterToken);
+                // Update like status in Firestore
+                FirebaseHelper.UpdateModelInDatabase("posts", post, post);
+            }
         }
 
         private void loadImage(String photoURL) {
