@@ -183,21 +183,28 @@ public class MainActivity extends AppCompatActivity {
 
     // Bottom Navigation Bar
     private void setupBottomNavigation() {
+        // Locates the navbar in the activity_main.xml file
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        // Sets the navbar to display home as selected option
         bottomNavigationView.setSelectedItemId(R.id.bottom_home);
+        // Check which button is clicked on navbar
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            // On home already, do nothing
             if (item.getItemId() == R.id.bottom_home) {
                 return true;
+                // If user selects friends button, open Friends Activity
             } else if (item.getItemId() == R.id.bottom_friends) {
                 startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
+                // If user selects posts button, open Upload Activity
             } else if (item.getItemId() == R.id.bottom_upload) {
                 startActivity(new Intent(getApplicationContext(), UploadActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 finish();
                 return true;
+                // If user selects profile button, open Profile Activity
             } else if (item.getItemId() == R.id.bottom_profile) {
                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

@@ -120,8 +120,11 @@ public class UploadActivity extends VinigarCompatActivity {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "Image");
         values.put(MediaStore.Images.Media.DESCRIPTION, "Captured by User");
+        // Returns URI that points to new image and specifies the image to be stored in external storage
         selectedImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        // Intent to use camera hardware for capture
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Adds our image data to the intent
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
     }
@@ -139,12 +142,14 @@ public class UploadActivity extends VinigarCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            // If user is taking a photo
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (selectedImageUri != null) {
                     imageView.setImageURI(selectedImageUri);
                 } else {
                     Toast.makeText(this, "Failed to capture image", Toast.LENGTH_SHORT).show();
                 }
+                // If user is selecting a photo from gallery
             } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
                 selectedImageUri = data.getData();
                 imageView.setImageURI(selectedImageUri);

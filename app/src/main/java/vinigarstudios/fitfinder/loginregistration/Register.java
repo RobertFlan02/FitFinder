@@ -212,6 +212,7 @@ public class Register extends AppCompatActivity {
                                                             if (user != null) {
                                                                 String userId = user.getUid();
                                                                 String userEmail = user.getEmail();
+                                                                // Obtain the current users FCM token for notifications use later
                                                                 FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
                                                                     @Override
                                                                     public void onTokenRetrieved(String token) {

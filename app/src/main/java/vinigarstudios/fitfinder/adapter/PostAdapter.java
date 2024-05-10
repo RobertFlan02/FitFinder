@@ -232,6 +232,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             .into(profileImageView);
                     usernameTextView.setText(userModel.getUsername()); // Get username from UserModel
 
+                    // Obtain the FCM token of the poster
                     posterToken = userModel.getToken();
                     Log.d("FCM Token", "Poster FCM Token: " + posterToken); // Log the FCM token
 
