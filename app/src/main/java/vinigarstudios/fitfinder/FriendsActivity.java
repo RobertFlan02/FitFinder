@@ -76,7 +76,7 @@ public class FriendsActivity extends VinigarCompatActivity
                 database.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.getResult().size() != 0) //if posts collection has documents (FetchPosts crashes if on 0 posts).
+                        if (task.getResult().size() > 0) //if posts collection has documents (FetchPosts crashes if on 0 posts).
                         {
                             FetchPostsFromFirestore();
                         }
@@ -201,16 +201,27 @@ public class FriendsActivity extends VinigarCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FirebaseHelper.GetCurrentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.action_order_by_time) {
-                    listOrder = ListOrder.time;
-                    FetchPostsFromFirestore();
-                } else if (itemId == R.id.action_order_by_likes) {
-                    listOrder = ListOrder.likes;
-                    FetchPostsFromFirestore();
-                }
+
+                database.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.getResult().size() > 0) //if posts collection has documents (FetchPosts crashes if on 0 posts).
+                        {
+                            int itemId = item.getItemId();
+                            if (itemId == R.id.action_order_by_time) {
+                                listOrder = ListOrder.time;
+                                FetchPostsFromFirestore();
+                            } else if (itemId == R.id.action_order_by_likes) {
+                                listOrder = ListOrder.likes;
+                                FetchPostsFromFirestore();
+                            }
+                        }
+                    }
+                });
             }
         });
         return true;
@@ -240,33 +251,26 @@ public class FriendsActivity extends VinigarCompatActivity
 
         Query query;
 
-        ArrayList<String> friendReqUserIds = new ArrayList<>();
+        this.friendRequestRecyclerView = findViewById(R.id.friendRequestRecyclerList);
+        if (currentUser.getFriendRequestsFromUserIdList().isEmpty())
+        {
+            //This query will return empty. There is an error when getFriendsId is empty so we have to handle it in this if statement.
+            query = FirebaseHelper.GetAllProfilesCollectionReference()
+                    .whereEqualTo("userId", "");
+        }
+        else
+        {
+            query = FirebaseHelper.GetAllProfilesCollectionReference()
+                    .whereIn("userId", currentUser.getFriendRequestsFromUserIdList());
+        }
 
-//        for (FriendRequestModel friendReq: currentUsersFriendRequestsList)
-//        {
-//            friendReqUserIds.add(friendReq.getFromUserId());
-//        }
-//
-//        this.friendRequestRecyclerView = findViewById(R.id.friendRequestRecyclerList);
-//        if (currentUsersFriendRequestsList.isEmpty())
-//        {
-//            //This query will return empty. There is an error when getFriendsId is empty so we have to handle it in this if statement.
-//            query = FirebaseHelper.GetAllProfilesCollectionReference()
-//                    .whereEqualTo("userId", "");
-//        }
-//        else
-//        {
-//            query = FirebaseHelper.GetAllProfilesCollectionReference()
-//                    .whereIn("userId", friendReqUserIds);
-//        }
-//
-//        FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
-//                .setQuery(query, UserModel.class).build();
-//
-//        friendRequestRecyclerAdapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
-//        friendRequestRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-//        friendRequestRecyclerView.setAdapter(friendRequestRecyclerAdapter);
-//        friendRequestRecyclerAdapter.startListening();
+        FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
+                .setQuery(query, UserModel.class).build();
+
+        friendRequestRecyclerAdapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
+        friendRequestRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        friendRequestRecyclerView.setAdapter(friendRequestRecyclerAdapter);
+        friendRequestRecyclerAdapter.startListening();
     }
 
     private void SetupSearchRecyclerView(String searchTerm){
