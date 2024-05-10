@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,6 +37,13 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
                 android:layout_marginStart="8dp"/>
+
+            <Button
+                android:id="@+id/likeAllButton"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="90dp"
+                android:layout_height="wrap_content"
+                android:text="Like All 💞"/>
 
         </LinearLayout>
 

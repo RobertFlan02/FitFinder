@@ -1,5 +1,6 @@
 package vinigarstudios.fitfinder.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,18 +39,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private List<PostsModel> postsList;
     private static FirebaseFirestore db;
-    private Context context;
-    private boolean refresh;
+    private Activity context;
+    private boolean enableLikesAllButton;
 
-    public PostAdapter(Context context, List<PostsModel> postsList, FirebaseFirestore db) {
+    public PostAdapter(Activity context, List<PostsModel> postsList, FirebaseFirestore db, boolean enableLikesAllButton) {
         this.postsList = postsList;
         this.db = db;
         this.context = context;
+        this.enableLikesAllButton = enableLikesAllButton;
+    }
+
+    public PostAdapter(Activity context, List<PostsModel> postsList, FirebaseFirestore db) {
+        this.postsList = postsList;
+        this.db = db;
+        this.context = context;
+        enableLikesAllButton = false;
     }
 
     public PostAdapter(List<PostsModel> postsList, Context context) {
         this.postsList = postsList;
         this.db = FirebaseFirestore.getInstance();
+        enableLikesAllButton = false;
     }
 
     public void setPostsList(List<PostsModel> postsList) {
@@ -60,7 +71,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item, parent, false);
-        return new PostViewHolder(view);
+        return new PostViewHolder(view, enableLikesAllButton, this);
     }
 
     @Override
@@ -130,12 +141,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private ImageView profileImageView;
         private TextView usernameTextView;
         private Button likeButton;
-
+        private Button likeAllButton;
         private Button removePostButton;
         private String posterToken;
-        private String msg;
 
-        public PostViewHolder(@NonNull View itemView) {
+        private PostAdapter postAdapter;
+        private ArrayList<PostLikeThreader> postLikeThreaders;
+        private String msg;
+        public PostViewHolder(@NonNull View itemView, boolean enableLikesAll, PostAdapter postAdapter) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.titleTextView);
             captionTextView = itemView.findViewById(R.id.captionTextView);
@@ -145,7 +158,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             profileImageView = itemView.findViewById(R.id.profileImageView);
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
             likeButton = itemView.findViewById(R.id.likeButton);
+            likeAllButton = itemView.findViewById(R.id.likeAllButton);
             removePostButton = itemView.findViewById(R.id.removePostButton);
+            postLikeThreaders = new ArrayList<>();
+
+            postAdapter.postsList.forEach(post -> postLikeThreaders.add(new PostLikeThreader(this, post)));
+
+            this.postAdapter = postAdapter;
+
+            if(!enableLikesAll)
+            {
+                likeAllButton.setVisibility(View.INVISIBLE);
+            }
         }
 
         public void bind(PostsModel post) {
@@ -177,17 +201,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         post.setLikes(post.getLikes() - 1);
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().remove(FirebaseHelper.GetCurrentUserId());
+                        // Update like status in Firestore
+                        FirebaseHelper.UpdateModelInDatabase("posts", post, post);
                     } else {
-                        // If not liked, set liked state and update text
-                        likeButton.setText("❤️");
-                        post.setLikes(post.getLikes() + 1);
-                        likesTextView.setText(String.valueOf(post.getLikes()));
-                        post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
-                        // Send like notification
-                        FCMNotificationSender.sendFCMLikeReceivedNotification(posterToken);
+                        LikePost(post);
                     }
-                    // Update like status in Firestore
-                    FirebaseHelper.UpdateModelInDatabase("posts", post, post);
+                }
+            });
+
+            likeAllButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    postLikeThreaders.forEach(pThreader -> pThreader.start());
+                    //Threads cant be ran twice so we disable the button.
+                    likeAllButton.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -217,6 +244,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
         }
 
+        private void LikePost(PostsModel post) {
+            // If not liked, set liked state and update text
+            likeButton.setText("❤️");
+            post.setLikes(post.getLikes() + 1);
+            likesTextView.setText(String.valueOf(post.getLikes()));
+            post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
+            // Send like notification
+            FCMNotificationSender.sendFCMLikeReceivedNotification(posterToken);
+            // Update like status in Firestore
+            FirebaseHelper.UpdateModelInDatabase("posts", post, post);
+        }
+
         private void loadImage(String photoURL) {
             // load image from URL into ImageView
             Glide.with(itemView.getContext())
@@ -243,6 +282,42 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public ImageView getProfileImageView() {
             return profileImageView;
+        }
+
+        public class PostLikeThreader extends Thread
+        {
+            private PostViewHolder postHolder;
+            private PostsModel post;
+
+            public PostLikeThreader(PostViewHolder viewHolder, PostsModel post)
+            {
+                this.postHolder = viewHolder;
+                this.post = post;
+            }
+            @Override
+            public void run()
+            {
+                try
+                {
+                    synchronized (this) {
+                        wait(3);
+
+                        postAdapter.context.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Like();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    Log.e("Threader Error", e.getMessage());
+                }
+            }
+
+                public void Like()
+            {
+                postHolder.LikePost(post);
+            }
         }
     }
 }

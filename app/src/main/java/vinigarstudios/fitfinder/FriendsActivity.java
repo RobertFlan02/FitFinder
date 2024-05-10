@@ -71,7 +71,7 @@ public class FriendsActivity extends VinigarCompatActivity
         this.topBar = findViewById(R.id.profile_title_layout);
         this.listOrder = ListOrder.time;
 
-        this.postAdapter = new PostAdapter(this, postsList, database);
+        this.postAdapter = new PostAdapter(this, postsList, database, true);
         this.friendsPostRecyclerView = findViewById(R.id.friendsPostRecyclerList);
         this.friendsPostRecyclerView.setAdapter(postAdapter);
         this.friendsPostRecyclerView.setLayoutManager(new LinearLayoutManager(this));
