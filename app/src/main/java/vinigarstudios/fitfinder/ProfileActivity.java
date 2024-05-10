@@ -46,7 +46,6 @@ public class ProfileActivity extends VinigarCompatActivity {
     private Uri imageUri;
     private StorageReference storageRef;
     private FirebaseFirestore db;
-
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private List<PostsModel> postsList;

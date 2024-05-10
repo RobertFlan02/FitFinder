@@ -7,18 +7,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
+import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
-import vinigarstudios.fitfinder.R;
 import vinigarstudios.utility.FirebaseHelper;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
@@ -30,7 +33,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.postsList = postsList;
         this.db = db;
     }
-
 
     public PostAdapter(List<PostsModel> postsList) {
         this.postsList = postsList;
@@ -90,26 +92,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             loadImage(post.getPhotoURL()); // Load image from URL
             displayTimestamp(post.getTimestamp()); // Display formatted timestamp
 
+            // Set initial text based on whether the post is liked or not
+            if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
+                likeButton.setText("❤️"); // Liked state
+            } else {
+                likeButton.setText("🤍"); // Unliked state
+            }
+
+            // Set OnClickListener to toggle like/unlike and update button text
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
-                    {
+                    if (!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
+                        // If not liked, set liked state and update text
+                        likeButton.setText("❤️");
                         post.setLikes(post.getLikes() + 1);
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().add(FirebaseHelper.GetCurrentUserId());
                         FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
-                        likeButton.setBackgroundColor(Color.rgb(1, 0, 1));
-                    }
-                    else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
-                    {
+                    } else {
+                        // If liked, set unliked state and update text
+                        likeButton.setText("🤍");
                         post.setLikes(post.getLikes() - 1);
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
                         post.getUserIDsWhoLiked().remove(FirebaseHelper.GetCurrentUserId());
                         FirebaseHelper.UpdateModelInDatabase("posts", post, newPost);
-                        likeButton.setBackgroundColor(Color.rgb(0, 1, 0));
                     }
                 }
             });

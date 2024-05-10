@@ -9,4 +9,14 @@
         android:icon="@android:drawable/ic_menu_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
+
+    <item
+        android:id="@+id/action_order_by_time"
+        android:title="Sort by Time"
+        app:showAsAction="collapseActionView"/>
+    <item
+        android:id="@+id/action_order_by_likes"
+        android:title="Sort by Likes"
+        app:showAsAction="collapseActionView"/>
+
 </menu>

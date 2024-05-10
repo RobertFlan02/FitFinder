@@ -78,14 +78,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                android:paddingRight="6dp"
                 android:textColor="#888888"/>
 
+            <!-- Like Button -->
             <Button
                 android:id="@+id/likeButton"
-                android:layout_width="63dp"
+                android:layout_width="78dp"
                 android:layout_height="wrap_content"
-                android:text="❤️" />
+                android:background="@android:color/transparent"
+                android:text="🤍"
+                android:textColor="#FF0000"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
             <!-- Timestamp -->
             <TextView
@@ -96,11 +100,6 @@
                 android:textSize="14sp"
                 android:textColor="#888888"
                 android:layout_marginBottom="4dp"/>
-
-
-
-
-
         </LinearLayout>
 
         <!-- Caption -->
