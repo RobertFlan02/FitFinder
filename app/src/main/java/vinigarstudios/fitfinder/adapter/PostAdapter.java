@@ -106,7 +106,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 likeButton.setText("🤍"); // Unliked state
             }
 
-            // Set OnClickListener to toggle like/unlike and update button text
+            // Set OnClickListener to toggle like/unlike and update like display
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -138,11 +138,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     Glide.with(itemView.getContext())
                             .load(userModel.getProfileImageURL()) // Get profile image URL from UserModel
                             .placeholder(R.drawable.greyicon) // Placeholder image
-                            .error(R.drawable.greyicon) // Error image
+                            .error(R.drawable.greyicon) // Error image (same as placeholder)
                             .into(profileImageView);
                     usernameTextView.setText(userModel.getUsername()); // Get username from UserModel
 
-                    posterToken = userModel.getToken(); // Assuming the field name is "token"
+                    posterToken = userModel.getToken();
                     Log.d("FCM Token", "Poster FCM Token: " + posterToken); // Log the FCM token
 
                 } else {
@@ -157,7 +157,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         private void loadImage(String photoURL) {
-            // Use Glide or Picasso to load image from URL into ImageView
+            // load image from URL into ImageView
             Glide.with(itemView.getContext())
                     .load(photoURL)
                     .into(postImageView);
@@ -165,8 +165,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         private void displayTimestamp(Timestamp timestamp) {
             if (timestamp != null) {
-                // Format timestamp as desired (e.g., convert to date and time string)
-                // Example:
+                // Format timestamp
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 String formattedTimestamp = sdf.format(timestamp.toDate());
                 timestampTextView.setText(formattedTimestamp);
