@@ -114,7 +114,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
             acceptFriendReqButton.setVisibility(View.INVISIBLE);
             removeFriendButton.setVisibility(View.VISIBLE);
         }
-        else if (currentUser.getFriendRequestsDocIdList().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user has friendreq from this person
+        else if (currentUser.getFriendRequestsFromUserIdList().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user has friendreq from this person
         {
             addFriendButton.setVisibility(View.INVISIBLE);
             declineFriendReqButton.setVisibility(View.VISIBLE);
