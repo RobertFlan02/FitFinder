@@ -244,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
                     HandleButtonVisibility();
                 }
             });
+
+            //Initialising Variables.
             otherUser = AndroidHelper.GetUserModelFromIntent(getIntent());
             username = findViewById(R.id.otherProfileUsernameText);
             profileImage = findViewById(R.id.otherProfileImage);
@@ -292,7 +294,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
+        /**
+         * Handles the button visibility in MainActivity.
+         */
         private void HandleButtonVisibility() {
             if (currentUser.getFriendsId().stream().anyMatch(f -> f.startsWith(otherUser.getUserId()))) //if user is friends with this person
             {
@@ -317,6 +321,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * How all the different profile buttons work -> Add, Remove, AcceptRequest, DeclineRequest.
+         */
         private void ButtonsFunctionality()
         {
             this.addFriendButton.setOnClickListener(new View.OnClickListener() {
@@ -335,6 +342,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+            //Self Explanatory
             this.removeFriendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -351,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+            //Self Explanatory
             this.acceptFriendReqButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -369,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            //Self Explanatory
             this.declineFriendReqButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

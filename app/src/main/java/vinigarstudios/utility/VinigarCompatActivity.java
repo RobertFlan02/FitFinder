@@ -31,6 +31,9 @@ public class VinigarCompatActivity extends AppCompatActivity {
         database = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
 
+        /**
+         * If user doesn't exist. Take them to Login class.
+         */
         if (user == null){
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);

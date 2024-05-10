@@ -2,7 +2,7 @@ package vinigarstudios.fitfinder.shop;
 
 import android.util.Log;
 import java.util.List;
-import vinigarstudios.fitfinder.clothes.Clothes;
+import vinigarstudios.fitfinder.deprecated.clothes.Clothes;
 
 public class Shop {
     private String image;

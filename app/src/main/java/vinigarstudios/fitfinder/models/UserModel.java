@@ -15,6 +15,9 @@ import java.util.List;
 
 import vinigarstudios.utility.FirebaseHelper;
 
+/**
+ * The model class for user (holds data).
+ */
 public class UserModel implements IModel
 {
     private String userId;
@@ -217,6 +220,10 @@ public class UserModel implements IModel
         }
     }
 
+    /**
+     * Add a post as your own.
+     * @param postsModel The post to be added.
+     */
     public void AddToPostsList(PostsModel postsModel)
     {
         if (!postsListIds.contains(postsModel.getPostId()))
@@ -226,6 +233,10 @@ public class UserModel implements IModel
         }
     }
 
+    /**
+     * Remove your own post.
+     * @param postsModel The post to be removed.
+     */
     public void RemoveFromPostsList(PostsModel postsModel)
     {
         if (postsListIds.contains(postsModel.getPostId())) {
@@ -240,6 +251,10 @@ public class UserModel implements IModel
         return userId;
     }
 
+    /**
+     * Decline the OtherUsers friend Request.
+     * @param otherUser The other user.
+     */
     public void DeclineUser(UserModel otherUser)
     {
         for(String string : getFriendRequestsFromUserIdList())
@@ -275,6 +290,10 @@ public class UserModel implements IModel
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
+    /**
+     * Accept the OtherUsers friend Request.
+     * @param otherUser The other user.
+     */
     public void AcceptUser(UserModel otherUser)
     {
         for(String string : getFriendRequestsFromUserIdList())

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 import vinigarstudios.utility.FirebaseHelper;
 
+/**
+ * The model class for post (holds data).
+ */
 public class PostsModel implements IModel {
     private String photoURL;
     private String profileUID;

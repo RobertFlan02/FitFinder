@@ -11,6 +11,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import vinigarstudios.utility.FirebaseHelper;
 
+/**
+ * The model class for FriendRequests (holds data).
+ */
 public class FriendRequestModel implements IModel
 {
     private String fromUserId;

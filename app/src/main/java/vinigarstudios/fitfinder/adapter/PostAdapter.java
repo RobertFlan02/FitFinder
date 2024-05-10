@@ -247,6 +247,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
         }
 
+        /**
+         * Like a post if u have not already liked it.
+         * @param post The post to be liked.
+         */
         private void LikePost(PostsModel post) {
             // If not liked, set liked state and update text
             if (!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId())) {
@@ -299,6 +303,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 this.postHolder = viewHolder;
                 this.post = post;
             }
+
+            /**
+             * Run the Threads synchronisely.
+             */
             @Override
             public void run()
             {

@@ -19,6 +19,11 @@ public class AndroidHelper
         Toast.makeText(context,message,Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Pass the UserModel into an Intent.
+     * @param intent The Intent.
+     * @param model The UserModel being passed in.
+     */
     public static void PassUserModelAsIntent(Intent intent, UserModel model)
     {
         intent.putExtra("username", model.GetUsername());
@@ -36,6 +41,11 @@ public class AndroidHelper
 
     }
 
+    /**
+     * Get the UserModel you passed in from the method - PassUserModelAsIntent(intent, model).
+     * @param intent The intent
+     * @return Returns a UserModel.
+     */
     public static UserModel GetUserModelFromIntent(Intent intent)
     {
         UserModel userModel = new UserModel();

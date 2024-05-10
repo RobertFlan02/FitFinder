@@ -40,6 +40,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         this.layout = layout;
     }
 
+    //Self explanatory.
     @Override
     protected void onBindViewHolder(@NonNull UserModelViewHolder holder, int position, @NonNull UserModel model) {
         holder.usernameTextView.setText(model.GetUsername());
@@ -69,11 +70,15 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
     @NonNull
     @Override
+    //Self Explanatory
     public UserModelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new UserModelViewHolder(view);
     }
 
+    /**
+     * Holds the view for the UserModel.
+     */
     static class UserModelViewHolder extends RecyclerView.ViewHolder
     {
         TextView usernameTextView;

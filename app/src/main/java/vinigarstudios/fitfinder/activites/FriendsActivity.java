@@ -249,6 +249,9 @@ public class FriendsActivity extends VinigarCompatActivity
 
     //endregion
 
+    /**
+     * Sets up the RecyclerView for Friend Requests.
+     */
     private void SetupFriendReqRecyclerView(){
 
         Query query;
@@ -292,6 +295,10 @@ public class FriendsActivity extends VinigarCompatActivity
         searchUserRecyclerAdapter.startListening();
     }
 
+    /**
+     * Sets up the RecyclerView for FriendSearch.
+     * @param searchTerm The search filter.
+     */
     private void SetupFriendSearchRecyclerView(String searchTerm)
     {
         Query query;
@@ -333,6 +340,9 @@ public class FriendsActivity extends VinigarCompatActivity
         friendRequestRecyclerView.setVisibility(visibility);
     }
 
+    /**
+     * Fetches posts from Firestore.
+     */
     private void FetchPostsFromFirestore()
     {
         Query query;
@@ -363,6 +373,7 @@ public class FriendsActivity extends VinigarCompatActivity
                 });
     }
 
+    //Idk how I added a second one of these(github bug?). Check the copy of it in MainActivity for Documentation.
     public static class OtherProfileActivity extends VinigarCompatActivity
     {
         private UserModel currentUser;

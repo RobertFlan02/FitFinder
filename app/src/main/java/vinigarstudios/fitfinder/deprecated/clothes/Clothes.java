@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder.clothes;
+package vinigarstudios.fitfinder.deprecated.clothes;
 
 @Deprecated
 public class Clothes {
