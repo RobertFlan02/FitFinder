@@ -252,7 +252,7 @@ public class Register extends AppCompatActivity {
     // Method to calculate password strength
     private int getPasswordStrength(String password) {
         int strength = 0;
-        if (password.length() >= 6) {
+        if (password.length() >= 2 ) {
             strength++;
         }
         if (containsCapital(password)) {
