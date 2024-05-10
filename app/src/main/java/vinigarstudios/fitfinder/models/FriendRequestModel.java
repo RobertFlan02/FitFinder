@@ -25,7 +25,7 @@ public class FriendRequestModel implements IModel
     {
         this.fromUserId = fromUserId;
         this.toUser = toUser;
-        this.friendReqId = toUser.getUserId() + "_" + toUser.getFriendRequestsDocIdList().size();
+        this.friendReqId = toUser.getUserId() + "_" + fromUserId;
         toUser.getFriendRequestsDocIdList().add(friendReqId);
         toUser.getFriendRequestsFromUserIdList().add(fromUserId);
         FirebaseHelper.UpdateModelInDatabase("profiles", toUser, toUser);

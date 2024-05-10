@@ -233,19 +233,20 @@ public class UserModel implements IModel
 
     public void DeclineUser(UserModel otherUser)
     {
-        for(String string : getFriendRequestsDocIdList())
+        for(String string : getFriendRequestsFromUserIdList())
         {
             if (string.startsWith(otherUser.getUserId()))
             {
-                this.RemoveUserAndDeleteFriendRequest(string);
+                this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUser.getUserId());
             }
         }
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
+    @Deprecated
     public void DeclineUser(String otherUserId)
     {
-        for(String string : getFriendRequestsDocIdList())
+        for(String string : getFriendRequestsFromUserIdList())
         {
             if (string.startsWith(otherUserId))
             {
@@ -255,9 +256,10 @@ public class UserModel implements IModel
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
+    @Deprecated
     public void DeclineFriendReq(String friendRequestId)
     {
-        this.RemoveUserAndDeleteFriendRequest(friendRequestId);
+        this.RemoveUserAndDeleteFriendRequest("afafa");
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
     }
 
@@ -267,7 +269,7 @@ public class UserModel implements IModel
         {
             if (string.startsWith(otherUser.getUserId()))
             {
-                this.RemoveUserAndDeleteFriendRequest(string);
+                this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUser.getUserId());
 
                 this.getFriendsId().add(otherUser.getUserId());
                 this.setFollowerCount(this.getFriendsId().size());

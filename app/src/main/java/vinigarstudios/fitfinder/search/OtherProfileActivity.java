@@ -55,6 +55,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 currentUser = task.getResult().toObject(UserModel.class);
                 HandleButtonVisibility();
+                ButtonsFunctionality();
             }
         });
         otherUser = AndroidHelper.GetUserModelFromIntent(getIntent());
@@ -68,8 +69,6 @@ public class OtherProfileActivity extends VinigarCompatActivity
 
         username.setText(otherUser.getUsername());
         followerCount.setText("Friends: " + otherUser.getFollowerCount());
-
-        this.ButtonsFunctionality();
 
         this.bottomNavigationView = findViewById(R.id.bottomNavigation);
 
