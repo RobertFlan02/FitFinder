@@ -9,7 +9,7 @@ public class FriendRequestHandler
 {
     public static boolean SendFriendRequest(String fromUserId, UserModel toUser)
     {
-        for (String friendRequest : toUser.getFriendRequestsDocIdList())
+        for (String friendRequest : toUser.getFriendRequestsFromUserIdList())
         {
             if (friendRequest.startsWith(fromUserId))
             {
