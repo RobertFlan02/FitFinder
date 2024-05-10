@@ -251,7 +251,7 @@ public class UserModel implements IModel
             if (string.startsWith(otherUserId))
             {
                 this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUserId);
-                this.getFriendRequestsDocIdList().remove(otherUserId);
+                this.getFriendRequestsFromUserIdList().remove(otherUserId);
 
             }
         }
