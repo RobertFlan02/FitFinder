@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import vinigarstudios.utility.FirebaseHelper;
 
@@ -22,7 +25,7 @@ public class FriendRequestModel implements IModel
     {
         this.fromUserId = fromUserId;
         this.toUser = toUser;
-        this.friendReqId = getFromUserId() + "_" + Integer.toString(toUser.getFriendRequestsDocIdList().size());
+        this.friendReqId = toUser.getUserId() + "_" + toUser.getFriendRequestsFromUserIdList().size();
     }
 
     public String getFromUserId() {
