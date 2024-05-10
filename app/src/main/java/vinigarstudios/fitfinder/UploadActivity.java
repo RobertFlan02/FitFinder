@@ -22,6 +22,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
@@ -39,6 +41,7 @@ public class UploadActivity extends VinigarCompatActivity {
     private EditText editTextCaption;
     private StorageReference storageRef;
 
+    private Bitmap imageBitmap;
     private boolean isUploadInProgress = false;
 
     @Override
