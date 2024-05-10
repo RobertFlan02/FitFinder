@@ -1,94 +1,89 @@
 package vinigarstudios.fitfinder.notifications;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import android.os.AsyncTask;
-
 public class FCMNotificationSender {
 
-    public static void sendFCMLikeNotification(String deviceToken) {
-        // Perform network operation asynchronously
-        new AsyncTask<String, Void, Void>() {
+    private static final String TAG = "FCMNotificationSender";
+    private static final String SERVER_KEY = "AAAADvN99lw:APA91bHtV_hBawYTns8z7wVPToqq94gv3Zem4pVqf2_mTHcIivL-OL-5KIXkuuuyBaPFXAg6W3kfWvuiiF4V0rgjjpyUErOq0EU_wxuT8HsETCnT6dAH_XAkKtgwjEijyGQMyKVXHNNN";
+
+    public static void sendFCMLikeNotification() {
+        FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
             @Override
-            protected Void doInBackground(String... params) {
-                String fcmUrl = "https://fcm.googleapis.com/fcm/send";
-                String serverKey = "AAAADvN99lw:APA91bHtV_hBawYTns8z7wVPToqq94gv3Zem4pVqf2_mTHcIivL-OL-5KIXkuuuyBaPFXAg6W3kfWvuiiF4V0rgjjpyUErOq0EU_wxuT8HsETCnT6dAH_XAkKtgwjEijyGQMyKVXHNNN"; // Replace with your FCM server key
-
-                try {
-                    // Create URL object
-                    URL url = new URL(fcmUrl);
-
-                    // Create connection
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setRequestProperty("Authorization", "key=" + serverKey);
-                    conn.setDoOutput(true);
-
-                    // Construct JSON payload
-                    String notificationBody = "{\"to\":\"" + params[0] + "\",\"notification\":{\"title\":\"You Liked a Post\",\"body\":\"Cool\"}}";
-
-                    // Send the notification
-                    OutputStream outputStream = conn.getOutputStream();
-                    outputStream.write(notificationBody.getBytes());
-                    outputStream.flush();
-
-                    // Get response code
-                    int responseCode = conn.getResponseCode();
-                    System.out.println("FCM notification sent, response code: " + responseCode);
-
-                    // Close streams
-                    outputStream.close();
-                    conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
+            public void onTokenRetrieved(String token) {
+                sendFCMNotification(token, "You Liked a Post", "Cool");
             }
-        }.execute(deviceToken);
+
+            @Override
+            public void onTokenRetrievalFailed(Exception exception) {
+                Log.e(TAG, "Failed to retrieve FCM token", exception);
+            }
+        });
     }
 
-    public static void sendFCMDislikeNotification(String deviceToken) {
-        // Perform network operation asynchronously
+    public static void sendFCMDislikeNotification() {
+        FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
+            @Override
+            public void onTokenRetrieved(String token) {
+                sendFCMNotification(token, "You Disliked a Post", "Not so Cool");
+            }
+
+            @Override
+            public void onTokenRetrievalFailed(Exception exception) {
+                Log.e(TAG, "Failed to retrieve FCM token", exception);
+            }
+        });
+    }
+
+    public static void sendFCMPostCreatedNotification() {
+        FCMTokenManager.getCurrentUserToken(new FCMTokenManager.TokenRetrievedCallback() {
+            @Override
+            public void onTokenRetrieved(String token) {
+                sendFCMNotification(token, "Post successfully created", "Show them how its done!");
+            }
+
+            @Override
+            public void onTokenRetrievalFailed(Exception exception) {
+                Log.e(TAG, "Failed to retrieve FCM token", exception);
+            }
+        });
+    }
+
+    private static void sendFCMNotification(String deviceToken, String title, String body) {
         new AsyncTask<String, Void, Void>() {
             @Override
             protected Void doInBackground(String... params) {
-                String fcmUrl = "https://fcm.googleapis.com/fcm/send";
-                String serverKey = "AAAADvN99lw:APA91bHtV_hBawYTns8z7wVPToqq94gv3Zem4pVqf2_mTHcIivL-OL-5KIXkuuuyBaPFXAg6W3kfWvuiiF4V0rgjjpyUErOq0EU_wxuT8HsETCnT6dAH_XAkKtgwjEijyGQMyKVXHNNN"; // Replace with your FCM server key
-
                 try {
-                    // Create URL object
+                    String fcmUrl = "https://fcm.googleapis.com/fcm/send";
                     URL url = new URL(fcmUrl);
 
-                    // Create connection
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setRequestProperty("Authorization", "key=" + serverKey);
+                    conn.setRequestProperty("Authorization", "key=" + SERVER_KEY);
                     conn.setDoOutput(true);
 
-                    // Construct JSON payload
-                    String notificationBody = "{\"to\":\"" + params[0] + "\",\"notification\":{\"title\":\"You Disliked a Post\",\"body\":\"Not so Cool\"}}";
+                    String notificationBody = "{\"to\":\"" + params[0] + "\",\"notification\":{\"title\":\"" + params[1] + "\",\"body\":\"" + params[2] + "\"}}";
 
-                    // Send the notification
                     OutputStream outputStream = conn.getOutputStream();
                     outputStream.write(notificationBody.getBytes());
                     outputStream.flush();
 
-                    // Get response code
                     int responseCode = conn.getResponseCode();
-                    System.out.println("FCM notification sent, response code: " + responseCode);
+                    Log.d(TAG, "FCM notification sent, response code: " + responseCode);
 
-                    // Close streams
                     outputStream.close();
                     conn.disconnect();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error sending FCM notification", e);
                 }
                 return null;
             }
-        }.execute(deviceToken);
+        }.execute(deviceToken, title, body);
     }
 }

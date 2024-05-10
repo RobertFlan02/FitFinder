@@ -30,7 +30,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private List<PostsModel> postsList;
     private static FirebaseFirestore db;
-    private static final String TAG = "MyFirebaseMsgService";
 
     public PostAdapter(List<PostsModel> postsList, FirebaseFirestore db) {
         this.postsList = postsList;
@@ -101,20 +100,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Token retrieval successful
-                            token = task.getResult();
-                            msg = "Your FCM token: " + token; // Direct concatenation
-                            Log.d(TAG, msg);
-                        } else {
-                            // Token retrieval failed
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                        }
-                    });
                     if(!post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
                     {
-                        FCMNotificationSender.sendFCMLikeNotification(token);
+                        FCMNotificationSender.sendFCMLikeNotification();
                         post.setLikes(post.getLikes() + 1);
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));
@@ -124,7 +112,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     }
                     else if (post.getUserIDsWhoLiked().contains(FirebaseHelper.GetCurrentUserId()))
                     {
-                        FCMNotificationSender.sendFCMDislikeNotification(token);
+                        FCMNotificationSender.sendFCMDislikeNotification();
                         post.setLikes(post.getLikes() - 1);
                         PostsModel newPost = post;
                         likesTextView.setText(String.valueOf(post.getLikes()));

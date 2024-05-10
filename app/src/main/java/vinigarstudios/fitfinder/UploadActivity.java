@@ -27,6 +27,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 
 import vinigarstudios.fitfinder.models.PostsModel;
+import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.utility.VinigarCompatActivity;
 
@@ -297,8 +298,6 @@ public class UploadActivity extends VinigarCompatActivity {
         }
     }
 
-
-
     private void uploadImageAndPostData() {
         // Retrieve the text from title and caption fields
         String title = editTextTitle.getText().toString();
@@ -342,6 +341,8 @@ public class UploadActivity extends VinigarCompatActivity {
                 photoRef.getDownloadUrl().addOnSuccessListener(downloadUri -> {
                     // Image download URL retrieved successfully
                     storeImageDataInFirestore(downloadUri.toString(), title, caption);
+                    // Send notification after storing image data in Firestore
+                    sendNotification();
                 }).addOnFailureListener(e -> {
                     // Failed to retrieve download URL
                     Toast.makeText(UploadActivity.this, "Failed to retrieve download URL", Toast.LENGTH_SHORT).show();
@@ -354,6 +355,10 @@ public class UploadActivity extends VinigarCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    private void sendNotification() {
+        FCMNotificationSender.sendFCMPostCreatedNotification();
     }
 
     private void storeImageDataInFirestore(String imageUrl, String title, String caption) {
