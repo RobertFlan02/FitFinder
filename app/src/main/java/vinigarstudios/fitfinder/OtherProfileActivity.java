@@ -10,18 +10,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import vinigarstudios.fitfinder.FriendsActivity;
 import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.UploadActivity;
+import vinigarstudios.fitfinder.adapter.PostAdapter;
+import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.AndroidHelper;
 import vinigarstudios.utility.FirebaseHelper;
@@ -32,6 +41,15 @@ public class OtherProfileActivity extends VinigarCompatActivity
 {
     private UserModel currentUser;
     private UserModel otherUser;
+
+//    private PostsModel otherUser2;
+//
+//    private RecyclerView recyclerView;
+//    private PostAdapter postAdapter;
+//
+//    private List<PostsModel> postsList;
+
+    private FirebaseFirestore db;
     private TextView username;
     private ImageView profileImage;
     private TextView followerCount;
@@ -48,7 +66,13 @@ public class OtherProfileActivity extends VinigarCompatActivity
         this.setContentView(R.layout.otherprofile);
 
 
-
+//        db = FirebaseFirestore.getInstance();
+//
+//        recyclerView = findViewById(R.id.recyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        postAdapter = new PostAdapter(postsList, db);
+//        recyclerView.setAdapter(postAdapter);
+//        fetchPostsFromFirestore();
 
         FirebaseHelper.GetCurrentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -58,6 +82,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
             }
         });
         otherUser = AndroidHelper.GetUserModelFromIntent(getIntent());
+//        otherUser2 = AndroidHelper.GetPostsModelFromIntent(getIntent());
         username = findViewById(R.id.otherProfileUsernameText);
         profileImage = findViewById(R.id.otherProfileImage);
         followerCount = findViewById(R.id.otherProfileFollowerCount);
@@ -202,4 +227,20 @@ public class OtherProfileActivity extends VinigarCompatActivity
         });
 
     }
+//    private void fetchPostsFromFirestore() {
+//        db.collection("posts")
+//                .whereEqualTo("profileUID", otherUser2.getProfileUID()) // Compares the profileUID with the other users and show posts if equal
+//                .get()
+//                .addOnSuccessListener(queryDocumentSnapshots -> {
+//                    postsList = new ArrayList<>();
+//                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                        PostsModel post = documentSnapshot.toObject(PostsModel.class);
+//                        postsList.add(post);
+//                    }
+//                    postAdapter.setPostsList(postsList);
+//                })
+//                .addOnFailureListener(e -> {
+//                    Toast.makeText(OtherProfileActivity.this, "Failed to fetch posts", Toast.LENGTH_SHORT).show();
+//                });
+//    }
 }
