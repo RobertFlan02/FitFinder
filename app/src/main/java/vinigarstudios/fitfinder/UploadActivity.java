@@ -42,6 +42,7 @@ public class UploadActivity extends VinigarCompatActivity {
     private StorageReference storageRef;
     private Bitmap imageBitmap;
 
+    private Bitmap imageBitmap;
     private boolean isUploadInProgress = false;
 
     @Override
