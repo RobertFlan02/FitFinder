@@ -238,6 +238,7 @@ public class UserModel implements IModel
             if (string.startsWith(otherUser.getUserId()))
             {
                 this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUser.getUserId());
+                this.getFriendRequestsFromUserIdList().remove(otherUser.getUserId());
             }
         }
         FirebaseHelper.UpdateModelInDatabase("profiles", this, this);
@@ -272,7 +273,8 @@ public class UserModel implements IModel
             if (string.startsWith(otherUser.getUserId()))
             {
                 this.RemoveUserAndDeleteFriendRequest(this.getUserId() + "_" + otherUser.getUserId());
-                getFriendRequestsDocIdList().remove(string);
+                this.getFriendRequestsFromUserIdList().remove(otherUser.getUserId());
+
 
                 this.getFriendsId().add(otherUser.getUserId());
                 this.setFollowerCount(this.getFriendsId().size());
