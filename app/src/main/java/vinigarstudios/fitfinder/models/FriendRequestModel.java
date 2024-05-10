@@ -43,10 +43,6 @@ public class FriendRequestModel implements IModel
         return friendReqId;
     }
 
-    public int getFriendReqIncrement() {
-        return friendReqIncrement;
-    }
-
     @Override
     public String getDocumentId() {
         return friendReqId;
