@@ -30,6 +30,8 @@ public class AndroidHelper
         intent.putExtra("friendRequestsDocIdList", model.getFriendRequestsDocIdList());
         intent.putExtra("friendsId", model.getFriendsId());
         intent.putExtra("createdAt", model.getCreatedAt());
+        intent.putExtra("postListsId", model.getPostsListIds());
+        intent.putExtra("friendRequestsFromUserIdList", model.getFriendRequestsFromUserIdList());
 
     }
 
@@ -41,10 +43,12 @@ public class AndroidHelper
         userModel.setEmail(intent.getStringExtra("email"));
         userModel.setFriendRequestsDocIdList(intent.getStringArrayListExtra("friendRequestsDocIdList"));
         userModel.setFriendsId(intent.getStringArrayListExtra("friendsId"));
+        userModel.setPostsListIds(intent.getStringArrayListExtra("postListsId"));
         userModel.setCreatedAt(intent.getParcelableExtra("createdAt"));
         userModel.setUserId(intent.getStringExtra("userId"));
         userModel.setFollowerCount(intent.getIntExtra("followerCount", 0));
         userModel.setProfileImageURL(intent.getStringExtra("profileImageURL"));
+        userModel.setFriendRequestsFromUserIdList(intent.getStringArrayListExtra("friendRequestsFromUserIdList"));
 
         return userModel;
     }

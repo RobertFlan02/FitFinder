@@ -155,6 +155,10 @@ public class UserModel implements IModel
         this.phone = phone;
     }
 
+    public void setPostsListIds(ArrayList<String> postsListIds) {
+        this.postsListIds = postsListIds;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
