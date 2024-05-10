@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -267,7 +268,8 @@ public class ProfileActivity extends VinigarCompatActivity {
     }
 
     private void fetchPostsFromFirestore() {
-        db.collection("posts")
+
+        db.collection("posts").orderBy("timestamp", Query.Direction.DESCENDING)
                 .whereEqualTo("profileUID", mAuth.getCurrentUser().getUid()) // Filter by the UID of the current user
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
