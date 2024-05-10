@@ -270,15 +270,16 @@ public class ProfileActivity extends VinigarCompatActivity {
     private void fetchPostsFromFirestore() {
 
         db.collection("posts").orderBy("timestamp", Query.Direction.DESCENDING)
-                .whereEqualTo("profileUID", mAuth.getCurrentUser().getUid()) // Filter by the UID of the current user
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .whereEqualTo("profileUID", mAuth.getCurrentUser().getUid()) // Filter by profileUID of current user with the filed profileUID in posts
+                .get()//gets posts that match comparison
+                .addOnSuccessListener(queryDocumentSnapshots -> { //when comparison is sussceful adds posts to arraylist
                     postsList = new ArrayList<>();
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         PostsModel post = documentSnapshot.toObject(PostsModel.class);
-                        postsList.add(post);
+                        postsList.add(post);// store each post
                     }
                     postAdapter.setPostsList(postsList);
+                    // recycler view is then updated with posts
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(ProfileActivity.this, "Failed to fetch posts", Toast.LENGTH_SHORT).show();

@@ -49,6 +49,11 @@ public class Register extends AppCompatActivity {
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,})+$");
+    //this code makes sure that the string matches the format of a standard email address
+    //it checks for letters numbers or underscores before the @
+    //also allows hyphens and dots
+    //then checks for more numbers or letters after the @
+    //then it requires a dot with atleast 2 character after i.e .com or .ie
 
     @Override
     public void onStart() {
@@ -59,6 +64,7 @@ public class Register extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+        //checks if user is logged in and directs them to the mainactivity
     }
 
     @Override
@@ -74,6 +80,7 @@ public class Register extends AppCompatActivity {
         textView = findViewById(R.id.btn_loginNow);
         editTextConfirmPassword = findViewById(R.id.confirm_password);
         ToggleButton showPasswordToggle = findViewById(R.id.show_password_toggle);
+        //sets up textfields, buttons or event listeners etc
 
         showPasswordToggle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,24 +95,28 @@ public class Register extends AppCompatActivity {
                     editTextConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 }
             }
+            //this code allows the user to show password by pressing a button
+            //if toggle button retruns true it means user wants to show password
+            //input is then changed to TYPE_TEXT_VARIATION_VISIBLE_PASSWORD to reveal password
+            //if toggle returns fakse, user wants to hide password
+            //input type is then changed to TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD to hide password
         });
 
         editTextPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Not needed
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Update password strength feedback whenever the password field changes
                 updatePasswordStrengthFeedback(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Not needed
             }
+
+            //code gives you feedback on how strong your password is depending on what you type
         });
 
         textView.setOnClickListener(new View.OnClickListener() {
@@ -186,11 +197,13 @@ public class Register extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
+                //this code is used to error handle the register
 
-                // Check if email already exists in the database
                 FirebaseFirestore.getInstance().collection("profiles")
                         .whereEqualTo("email", email)
                         .get()
+
+                        // check if email already exists in the database
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -245,7 +258,7 @@ public class Register extends AppCompatActivity {
                                 }
                             }
                         });
-            }
+            }// more error handling
         });
 
     }
@@ -267,6 +280,11 @@ public class Register extends AppCompatActivity {
         }
         return strength;
     }
+
+    // password gets stronger by 1 after it has more than 2 characters
+    //password gets stringer by 1 after it contains a capital letter
+    //password gets stronger by 1 after adding a digit
+    //the strongest contains all of the above aswell as a special symbol
 
 
     private void updatePasswordStrengthFeedback(String password) {
@@ -296,6 +314,9 @@ public class Register extends AppCompatActivity {
         }
     }
 
+    //this code calculates the strenght of a password based on certain critria, after 1 criteria is met the
+    //password gets stronger,
+
 
 
     private boolean containsCapital(String str) {
@@ -305,12 +326,15 @@ public class Register extends AppCompatActivity {
             }
         }
         return false;
+
+        //checks if a string contains at least one uppercase letter.
     }
 
 
     private boolean isValidEmailLength(String email) {
         String[] emailSplit = email.split("@");
         return emailSplit.length == 2 && emailSplit[0].length() >= 5;
+        // checks if an email address has a valid length before the @ symbol
     }
 
     // Validate email format
@@ -327,5 +351,6 @@ public class Register extends AppCompatActivity {
         }
 
         FirebaseHelper.GetCurrentUserDetails().set(userModel);
+        //sets data for a user model  and stores it in Firebase
     }
 }
