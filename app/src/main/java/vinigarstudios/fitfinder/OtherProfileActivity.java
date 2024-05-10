@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder.search;
+package vinigarstudios.fitfinder;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -176,6 +176,7 @@ public class OtherProfileActivity extends VinigarCompatActivity
                 }
                 catch(Exception e)
                 {
+                    //Friend request already sent
                     //Friend request already sent
                     Toast.makeText(getApplicationContext(), "Error accepting friend Request", Toast.LENGTH_SHORT).show();
                 }

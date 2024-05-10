@@ -2,7 +2,6 @@ package vinigarstudios.fitfinder.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +20,6 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.google.firebase.installations.remote.TokenResult;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +29,6 @@ import vinigarstudios.fitfinder.ProfileActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.PostsModel;
 import vinigarstudios.fitfinder.models.UserModel;
-import vinigarstudios.fitfinder.search.OtherProfileActivity;
 import vinigarstudios.utility.AndroidHelper;
 import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.fitfinder.notifications.FCMNotificationSender;
@@ -110,7 +105,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             context.startActivity(intent);
                             return;
                         }
-                        Intent intent = new Intent(context, OtherProfileActivity.class);
+                        Intent intent = new Intent(context, MainActivity.OtherProfileActivity.class);
                         AndroidHelper.PassUserModelAsIntent(intent, user);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);

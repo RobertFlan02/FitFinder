@@ -1,5 +1,6 @@
 package vinigarstudios.fitfinder.clothes;
 
+@Deprecated
 public class Clothes {
 
     private String image;

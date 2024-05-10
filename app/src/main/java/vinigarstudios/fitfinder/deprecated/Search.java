@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder.search;
+package vinigarstudios.fitfinder.deprecated;
 
 import android.os.Bundle;
 import android.util.Log;

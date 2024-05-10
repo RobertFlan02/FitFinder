@@ -39,17 +39,17 @@
             android:exported="false"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
-            android:name=".search.Search"
+            android:name=".deprecated.Search"
             android:exported="true"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Material3.Light" />
         <activity
-            android:name=".search.OtherProfileActivity"
+            android:name=".MainActivity$OtherProfileActivity"
             android:exported="true"
             android:parentActivityName=".FriendsActivity"
             android:theme="@style/Theme.Material3.Light" />
         <activity
-            android:name=".search.SearchUserActivity"
+            android:name=".deprecated.SearchUserActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.Material3.Light" />

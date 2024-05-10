@@ -16,13 +16,10 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import java.util.List;
-
+import vinigarstudios.fitfinder.MainActivity;
 import vinigarstudios.fitfinder.R;
 import vinigarstudios.fitfinder.models.UserModel;
-import vinigarstudios.fitfinder.search.OtherProfileActivity;
 import vinigarstudios.utility.AndroidHelper;
-import vinigarstudios.utility.FirebaseHelper;
 
 public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserModel, SearchUserRecyclerAdapter.UserModelViewHolder>
 {
@@ -63,7 +60,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
 
         holder.itemView.setOnClickListener(v -> {
             // Navigate to other profile page
-            Intent intent = new Intent(context, OtherProfileActivity.class);
+            Intent intent = new Intent(context, MainActivity.OtherProfileActivity.class);
             AndroidHelper.PassUserModelAsIntent(intent, model);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);

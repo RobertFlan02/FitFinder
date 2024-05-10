@@ -1,4 +1,4 @@
-package vinigarstudios.fitfinder.search;
+package vinigarstudios.fitfinder.deprecated;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +20,8 @@ import vinigarstudios.utility.FirebaseHelper;
 import vinigarstudios.fitfinder.models.UserModel;
 import vinigarstudios.utility.VinigarCompatActivity;
 //Unused class since searching is now in friends. Might use later.
+
+@Deprecated
 public class SearchUserActivity extends VinigarCompatActivity
 {
 
