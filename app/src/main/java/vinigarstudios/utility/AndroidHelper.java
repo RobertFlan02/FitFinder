@@ -32,6 +32,7 @@ public class AndroidHelper
         intent.putExtra("createdAt", model.getCreatedAt());
         intent.putExtra("postListsId", model.getPostsListIds());
         intent.putExtra("friendRequestsFromUserIdList", model.getFriendRequestsFromUserIdList());
+        intent.putExtra("token", model.getToken());
 
     }
 
@@ -49,6 +50,7 @@ public class AndroidHelper
         userModel.setFollowerCount(intent.getIntExtra("followerCount", 0));
         userModel.setProfileImageURL(intent.getStringExtra("profileImageURL"));
         userModel.setFriendRequestsFromUserIdList(intent.getStringArrayListExtra("friendRequestsFromUserIdList"));
+        userModel.setToken(intent.getStringExtra("token"));
 
         return userModel;
     }
